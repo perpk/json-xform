@@ -1,9 +1,8 @@
-const { expect, assert } = require('chai');
-const { describe, it, before, after } = require('mocha');
+const { expect } = require('chai');
+const { describe, it } = require('mocha');
 
-const rewire = require('rewire');
-const index = rewire('../index.js');
-const addPropToTarget = index.__get__('addPropToTarget');
+const {addPropToTarget} = require('../utils/constructTarget');
+
 
 describe('Adding a property to an empty target object', () => {
   it('should add a primitive field', () => {

@@ -10,7 +10,8 @@
   "author": "k.a.perperidis@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "jsonpath": "^1.1.1"
+    "jsonpath": "^1.1.1",
+    "jsonschema": "^1.4.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",
