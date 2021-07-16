@@ -20,22 +20,31 @@ const mapToNewObject = (source, xFormTemplate) => {
     return {};
 };
 
-const traverseTemplate = (source, xFormTemplate) => {
+
+const traverseFromEach = () => {
+    // TODO implement me!
+    throw Error('Not implemented yet!')
+}
+
+const traverseFieldset = (template, prop, target) => {
+    template[prop].forEach((item) => {
+        if (item.fromEach) {
+            traverseFromEach();
+        }
+        // ! TODO continue implementation...
+        // target = addPropToTarget()
+    });
+}
+
+const traverseTemplate = (source, xFormTemplate, target) => {
     for (const prop in xformTemplate) {
         if (prop === commands.FIELDSET) {
-            traverseFieldset(xFormTemplate, prop);
+            traverseFieldset(xFormTemplate, prop, target);
         }
         if (prop === commands.FROMEACH) {
-
+            traverseFromEach();
         }
 
     }
 };
-
-const traverseFieldset = (template, prop) => {
-    template[prop].forEach((item) => {
-        traverseTemplate(item);
-    });
-}
-
 module.exports = {mapToNewObject, mapWithTemplate, traverseTemplate};
