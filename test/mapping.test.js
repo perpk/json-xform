@@ -115,4 +115,70 @@ describe('Mapping with chaining in the target field', () => {
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
+
+  it('should map an object typed value into a new object in the target field', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: 'object',
+          to: 'objectWrapper.newObject'
+        }
+      ]
+    };
+    const source = {
+      object: {
+        propOne: 1,
+        propTwo: 'two',
+        propThree: [1, 2, 3, 'banana']
+      }
+    };
+    const target = {
+      objectWrapper: {
+        newObject: {
+          propOne: 1,
+          propTwo: 'two',
+          propThree: [1, 2, 3, 'banana']
+        }
+      }
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+
+  it('should map nested object properties to new properties', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: 'object.propOne',
+          to: 'objectWrapper.newObject.newPropOne'
+        },
+        {
+          from: 'object.propTwo',
+          to: 'objectWrapper.newObject.newPropTwo'
+        },
+        {
+          from: 'object.propThree',
+          to: 'objectWrapper.newObject.newPropThree'
+        }
+      ]
+    };
+    const source = {
+      object: {
+        propOne: 1,
+        propTwo: 'two',
+        propThree: [1, 2, 3, 'banana']
+      }
+    };
+    const target = {
+      objectWrapper: {
+        newObject: {
+          newPropOne: 1,
+          newPropTwo: 'two',
+          newPropThree: [1, 2, 3, 'banana']
+        }
+      }
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
 });

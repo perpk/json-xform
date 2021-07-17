@@ -1,12 +1,12 @@
 const addPropToTarget = (target, property, propertyValue) => {
-    const newTarget = {...target};
-    if (property.indexOf('.') >= 0) {
-        const parts = property.split('.');
-        addPropRecursive(parts, newTarget, propertyValue);
-    } else if (!newTarget[property]) {
-      newTarget[property] = propertyValue;
-    }
-    return newTarget
+  const newTarget = { ...target };
+  if (property.indexOf('.') >= 0) {
+    const parts = property.split('.');
+    addPropRecursive(parts, newTarget, propertyValue);
+  } else if (!newTarget[property]) {
+    newTarget[property] = propertyValue;
+  }
+  return newTarget;
 };
 
 const addPropRecursive = (elems, target, value) => {
@@ -15,9 +15,11 @@ const addPropRecursive = (elems, target, value) => {
     target = value;
     return target;
   }
-  target[current] = {};
+  if (!target[current]) {
+    target[current] = {};
+  }
   target[current] = addPropRecursive(elems, target[current], value, current);
   return target;
 };
 
-module.exports = {addPropToTarget};
+module.exports = { addPropToTarget };
