@@ -16,7 +16,7 @@ describe('Mapping without chaining from specified from to target field', () => {
             random: 'value'
         };
         const newObject = mapToNewObject(source, xFormTemplate);
-        expect(newObject).to.equal(source);
+        expect(newObject).to.eqls(source);
     });
 
     it ('should map an array typed value', () => {
