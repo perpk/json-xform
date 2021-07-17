@@ -24,7 +24,7 @@ describe('Mapping without chaining from specified from to target field', () => {
             random: [1, 2, 3, 4]
         };
         const newObject = mapToNewObject(source, xFormTemplate);
-        expect(newObject).to.equal(source);
+        expect(newObject).to.eqls(source);
     });
 
     it ('should map an object typed value', () => {
@@ -34,7 +34,7 @@ describe('Mapping without chaining from specified from to target field', () => {
             }
         };
         const newObject = mapToNewObject(source, xFormTemplate);
-        expect(newObject).to.equal(source);
+        expect(newObject).to.eqls(source);
     });
 
     it ('should map all types with a different name in the target', () => {
@@ -61,8 +61,15 @@ describe('Mapping without chaining from specified from to target field', () => {
                 object: "value"
             }
         };
+        const target = {
+            newSimpleValue: 1,
+            newArrayValue: [1, 2, 3, 4],
+            newObjectValue: {
+                object: "value"
+            }
+        }
         const newObject = mapToNewObject(source, xFormTemplateAll);
-        expect(newObject).to.equal(source);
+        expect(newObject).to.eqls(target);
     });
 });
 
