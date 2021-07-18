@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const { readJSON } = require('./ioUtils');
 const { addPropToTarget } = require('./constructTarget');
 const {
