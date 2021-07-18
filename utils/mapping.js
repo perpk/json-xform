@@ -3,8 +3,7 @@ const { readJSON } = require('./ioUtils');
 const { addPropToTarget } = require('./constructTarget');
 const {
   querySingleProp,
-  queryAll,
-  queryArrayElements
+  queryAll
 } = require('./queryJson');
 
 const commands = {
@@ -18,7 +17,7 @@ const mapWithTemplate = (sourceFile, xformTemplateFile) => {
   const source = readJSON(sourceFile);
   const xformTemplate = readJSON(xformTemplateFile);
 
-  return mapSourceToTarget(source, xformTemplate);
+  return mapToNewObject(source, xformTemplate);
 };
 
 const mapToNewObject = (source, xFormTemplate) => {

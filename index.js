@@ -1,39 +1,7 @@
-const fs = require('fs');
-const jp = require('jsonpath');
-const xformTemplateFile = fs.readFileSync('./xformTemplate.json', 'UTF8');
-const xformTemplate = JSON.parse(xformTemplateFile);
+const mapToNewObject = require('./utils/mapping').mapToNewObject;
+const mapWithTemplate = require('./utils/mapping').mapWithTemplate;
 
-const commands = {
-  FIELDSET: 'fieldset',
-  FROM: 'from',
-  TO: 'to',
-  FROMEACH: 'fromEach'
+module.exports = {
+  mapToNewObject,
+  mapWithTemplate
 };
-
-const inputFile = fs.readFileSync('./dependency-check-report.json', 'UTF8');
-const input = JSON.parse(inputFile);
-
-const traverseFieldset = (object, fieldset, input, target) => {
-  // object[fieldset].forEach((item) => {
-  //   traverseFormTemplate(item);
-  // });
-  // console.log(object[fieldset][0]);
-  object[fieldset].forEach((item) => {
-    console.log(item);
-});
-};
-
-const traverseFormTemplate = (formTemplate, input, target) => {
-  for (const prop in formTemplate) {
-    if (prop === commands.FIELDSET) {
-      // console.log(formTemplate[prop])
-      return traverseFieldset(formTemplate, prop, input, {});
-    }
-    if (prop === commands.FROMEACH) {
-      return traverseFormTemplate(formTemplate[prop]);
-    }
-    // console.log(`${prop}: ${formTemplate[prop]}`);
-  }
-};
-
-traverseFormTemplate(xformTemplate, input, {});
