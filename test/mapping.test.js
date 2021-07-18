@@ -342,5 +342,64 @@ describe('Testing complex object', () => {
     expect(newObject).to.eqls(target);
   });
 
-  it('should correctly map an object with a fieldset and a fromEach with a nested fromEach to a target object', () => {});
+  it('should correctly map an object with a fieldset and a fromEach with a nested fromEach to a target object', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: 'myProp',
+          to: 'yourProp',
+          fromEach: {
+            field: 'firstLevelGroup',
+            fromEach: {
+              field: 'secondLevelGroup',
+              fieldset: [
+                {
+                  from: 'myVeryNestedProp',
+                  to: 'yourVeryNestedProp'
+                },
+                {
+                  from: 'myOtherVeryNestedProp',
+                  to: 'yourOtherVeryNestedProp'
+                }
+              ]
+            }
+          }
+        }
+      ]
+    };
+    const source = {
+      myProp: 'myValue',
+      firstLevelGroup: [
+        {
+          secondLevelGroup: [
+            {
+              myVeryNestedProp: 'myVeryNestedValue',
+              noInterestedIn: 'this value'
+            },
+            {
+              myOtherVeryNestedProp: 'myOtherVeryNestedValue',
+              alsoNotInterestedIn: 'that value'
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      yourProp: 'myValue',
+      firstLevelGroup: [
+        {
+          secondLevelGroup: [
+            {
+              yourVeryNestedProp: 'myVeryNestedValue'
+            },
+            {
+              yourOtherVeryNestedProp: 'myOtherVeryNestedValue'
+            }
+          ]
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
 });

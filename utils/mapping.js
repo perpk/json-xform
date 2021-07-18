@@ -32,6 +32,9 @@ const traverseFromEach = (source, xFormTemplate, prop, target) => {
   const fieldData = queryAll(source, field);
   target[to] = new Array();
   for (const prop in fromEachRef) {
+    if (prop === commands.FROMEACH) {
+      target[to].push(traverseFromEach(fieldData, fromEachRef, prop, {}));
+    }
     if (prop === commands.FIELDSET) {
       for (fieldset of fromEachRef[prop]) {
         for (const item of fieldData) {
