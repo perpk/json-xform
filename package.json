@@ -1,5 +1,5 @@
 {
-  "name": "json-xform",
+  "name": "@perpk/json-xform",
   "version": "1.0.0-alpha.1",
   "description": "",
   "main": "index.js",
