@@ -35,6 +35,26 @@ describe('Query properties from a JSON file', () => {
     expect(result).to.equal(json.arrayProp);
   });
 
+  it ('should query all elements of an array nested in an object', () => {
+    const json = {
+      wrappingObject: {
+        arrayProp: [
+          {
+            arrayElementOne: 'value one'
+          },
+          {
+            arrayElementTwo: 'value two'
+          },
+          {
+            arrayElementThree: 'value three'
+          }
+        ]
+      }
+    };
+    const result = queryAll(json, 'wrappingObject.arrayProp');
+    expect(result).to.equal(json.wrappingObject.arrayProp);
+  });
+
   it('should get particular value out of an array of objects', () => {
     const json = {
       arrayProp: [

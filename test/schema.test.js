@@ -80,26 +80,26 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
   });
 
   it('should find a JSON invalid if fieldset contain only one non-mandatory field', () => {
-    const jsonToValidate = {fieldset: [{to: 'targetField'}]};
+    const jsonToValidate = { fieldset: [{ to: 'targetField' }] };
     const result = validateWithSchema(jsonToValidate);
     expect(result.valid).to.false;
   });
 
-  it ('should find a JSON invalid if the fromEach block doesn\'t contain the mandatory field(s)', () => {
+  it("should find a JSON invalid if the fromEach block doesn't contain the mandatory field(s)", () => {
     const jsonToValidate = {
-        fieldset: [
-            {
-                fromEach: {
-                    to: 'fromEachTargetField',
-                    fieldset: [
-                        {
-                            from: 'this field',
-                            to: 'that field'
-                        }
-                    ]
-                }
-            }
-        ]
+      fieldset: [
+        {
+          fromEach: {
+            to: 'fromEachTargetField',
+            fieldset: [
+              {
+                from: 'this field',
+                to: 'that field'
+              }
+            ]
+          }
+        }
+      ]
     };
     const result = validateWithSchema(jsonToValidate);
     expect(result.valid).to.false;

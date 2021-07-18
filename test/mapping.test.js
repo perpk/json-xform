@@ -181,4 +181,77 @@ describe('Mapping with chaining in the target field', () => {
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
+
+  it("should inherit nesting from source if no 'to' field is specified", () => {
+    const xFormTemplate = {
+      fieldset: [
+        { from: 'objectWrapper.object.firstProp' },
+        { from: 'objectWrapper.object.secondProp' },
+        { from: 'objectWrapper.object.thirdProp' }
+      ]
+    };
+    const source = {
+      objectWrapper: {
+        object: {
+          firstProp: '1st value',
+          secondProp: '2nd value',
+          thirdProp: '3rd value'
+        }
+      }
+    };
+    const target = {
+      objectWrapper: {
+        object: {
+          firstProp: '1st value',
+          secondProp: '2nd value',
+          thirdProp: '3rd value'
+        }
+      }
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+});
+
+describe('Testing repetition groups', () => {
+  it('should successfully take over properties mapped in a fromEach repetition group to a new object', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'repetitionGroup',
+            fieldset: [
+              {
+                from: 'singleProperty'
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      repetitionGroup: [
+        {
+          propertyToIgnore: 'value to ignore',
+          singleProperty: 'value to copy!'
+        },
+        {
+          anotherPropertyToIgnore: 'value to ignore too',
+          singleProperty: 'another value to copy!'
+        }
+      ]
+    };
+    const target = {
+      repetitionGroup: [
+        {
+          singleProperty: 'value to copy!'
+        },
+        {
+          singleProperty: 'another value to copy!'
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
 });

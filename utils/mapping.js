@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { readJSON } = require('./ioUtils');
 const { addPropToTarget } = require('./constructTarget');
 const {
@@ -24,25 +25,40 @@ const mapToNewObject = (source, xFormTemplate) => {
   return traverseTemplate(source, xFormTemplate);
 };
 
-const traverseFromEach = () => {
-  // TODO implement me!
-  throw Error('Not implemented yet!');
+const traverseFromEach = (source, xFormTemplate, prop, target) => {
+  const fromEachRef = xFormTemplate[prop];
+  const field = fromEachRef.field;
+  const to = fromEachRef.to || field;
+  const fieldData = queryAll(source, field);
+  target[to] = new Array();
+  for (const prop in fromEachRef) {
+    if (prop === commands.FIELDSET) {
+      for (fieldset of fromEachRef[prop]) {
+        for (const item of fieldData) {
+          const fromItem = fieldset.from;
+          const toItem = item.to || fromItem;
+          const fromValue = querySingleProp(item, fromItem);
+          let currentTarget = addPropToTarget({}, toItem, fromValue);
+          target[to].push(currentTarget);
+        }
+      }
+    }
+  }
+  return target;
 };
 
 const traverseFieldset = (source, template, prop, target) => {
   template[prop].forEach((item) => {
     if (item.fromEach) {
-      traverseFromEach();
+      return traverseFromEach(source, item, Object.keys(item)[0], target);
     }
 
-    template[prop].forEach((item) => {
-      const from = item.from;
-      const to = item.to || item.from;
+    const from = item.from;
+    const to = item.to || item.from;
 
-      const fromValue = querySingleProp(source, from);
-      let currentTarget = addPropToTarget(target, to, fromValue);
-      target = { ...target, ...currentTarget };
-    });
+    const fromValue = querySingleProp(source, from);
+    let currentTarget = addPropToTarget(target, to, fromValue);
+    target = { ...target, ...currentTarget };
   });
   return target;
 };
@@ -54,9 +70,9 @@ const traverseTemplate = (source, xFormTemplate) => {
     if (prop === commands.FIELDSET) {
       currentTarget = traverseFieldset(source, xFormTemplate, prop, target);
     } else if (prop === commands.FROMEACH) {
-      currentTarget = traverseFromEach();
+      currentTarget = traverseFromEach(source, xFormTemplate, prop, target);
     }
-    target = {...target, ...currentTarget};
+    target = { ...target, ...currentTarget };
   }
   return target;
 };
