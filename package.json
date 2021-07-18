@@ -1,7 +1,12 @@
 {
   "name": "@perpk/json-xform",
-  "version": "1.0.0-alpha.1",
-  "description": "",
+  "version": "1.0.0-alpha.2",
+  "homepage": "https://github.com/perpk/json-xform#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/perpk/json-xform"
+  },
+  "description": "A small library to perform transformations between JSON data.",
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha",
