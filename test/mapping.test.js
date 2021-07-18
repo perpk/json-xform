@@ -254,4 +254,93 @@ describe('Testing repetition groups', () => {
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
+
+  it('should successfully take over properties mapped in a fromEach repetition group to a new object with another name', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'repetitionGroup',
+            to: 'newGroup',
+            fieldset: [
+              {
+                from: 'singleProperty',
+                to: 'newSingleProperty'
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      repetitionGroup: [
+        {
+          propertyToIgnore: 'value to ignore',
+          singleProperty: 'value to copy!'
+        }
+      ]
+    };
+    const target = {
+      newGroup: [
+        {
+          newSingleProperty: 'value to copy!'
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+});
+
+describe('Testing complex object', () => {
+  it('should correctly map an object with a fieldset and a fromEach to a target object', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: 'myProp',
+          to: 'yourProp',
+          fromEach: {
+            field: 'myField',
+            to: 'yourField',
+            fieldset: [
+              {
+                from: 'myNestedProp',
+                to: 'yourNestedProp'
+              },
+              {
+                from: 'myOtherNestedProp',
+                to: 'yourOtherNestedProp'
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      myProp: 'myValue',
+      myField: [
+        {
+          myNestedProp: 'myNestedPropValue'
+        },
+        {
+          myOtherNestedProp: 'myOtherNestedPropValue'
+        }
+      ]
+    };
+    const target = {
+      yourProp: 'myValue',
+      yourField: [
+        {
+          yourNestedProp: 'myNestedPropValue'
+        },
+        {
+          yourOtherNestedProp: 'myOtherNestedPropValue'
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+
+  it('should correctly map an object with a fieldset and a fromEach with a nested fromEach to a target object', () => {});
 });

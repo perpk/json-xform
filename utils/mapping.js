@@ -35,8 +35,11 @@ const traverseFromEach = (source, xFormTemplate, prop, target) => {
     if (prop === commands.FIELDSET) {
       for (fieldset of fromEachRef[prop]) {
         for (const item of fieldData) {
+          if (!Object.keys(item).find((k) => {return fieldset.from === k})) {
+            continue;
+          }
           const fromItem = fieldset.from;
-          const toItem = item.to || fromItem;
+          const toItem = fieldset.to || fromItem;
           const fromValue = querySingleProp(item, fromItem);
           let currentTarget = addPropToTarget({}, toItem, fromValue);
           target[to].push(currentTarget);
@@ -50,15 +53,17 @@ const traverseFromEach = (source, xFormTemplate, prop, target) => {
 const traverseFieldset = (source, template, prop, target) => {
   template[prop].forEach((item) => {
     if (item.fromEach) {
-      return traverseFromEach(source, item, Object.keys(item)[0], target);
+      target = {...target, ...traverseFromEach(source, item, 'fromEach', target)};
     }
 
-    const from = item.from;
-    const to = item.to || item.from;
-
-    const fromValue = querySingleProp(source, from);
-    let currentTarget = addPropToTarget(target, to, fromValue);
-    target = { ...target, ...currentTarget };
+    if (item.from) {
+      const from = item.from;
+      const to = item.to || item.from;
+  
+      const fromValue = querySingleProp(source, from);
+      let currentTarget = addPropToTarget(target, to, fromValue);
+      target = { ...target, ...currentTarget };
+    }
   });
   return target;
 };
