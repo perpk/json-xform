@@ -320,9 +320,7 @@ describe('Testing complex object', () => {
       myProp: 'myValue',
       myField: [
         {
-          myNestedProp: 'myNestedPropValue'
-        },
-        {
+          myNestedProp: 'myNestedPropValue',
           myOtherNestedProp: 'myOtherNestedPropValue'
         }
       ]
@@ -405,34 +403,48 @@ describe('Testing complex object', () => {
 
   it('should correctly map nested fromEach blocks with fieldsets within', () => {
     const xFormTemplate = {
-      fieldset: [{
-        fromEach: {
-          field: 'levelOne',
-          fieldset: [{
-            fromEach: {
-              field: 'array',
-              fieldset: [{
-                from: 'levelTwo'
-              }]
-            }
-          }]
+      fieldset: [
+        {
+          fromEach: {
+            field: 'levelOne',
+            fieldset: [
+              {
+                fromEach: {
+                  field: 'array',
+                  fieldset: [
+                    {
+                      from: 'levelTwo'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
-      }]
+      ]
     };
     const source = {
-      levelOne: [{
-        array: [{
-          levelTwo: 'here\'s level two :2 y\'all!'
-        }]
-      }]
-    }
+      levelOne: [
+        {
+          array: [
+            {
+              levelTwo: "here's level two :2 y'all!"
+            }
+          ]
+        }
+      ]
+    };
     const target = {
-      levelOne: [{
-        array: [{
-          levelTwo: 'here\'s level two :2 y\'all!'
-        }]
-      }]
-    }
+      levelOne: [
+        {
+          array: [
+            {
+              levelTwo: "here's level two :2 y'all!"
+            }
+          ]
+        }
+      ]
+    };
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
@@ -460,5 +472,61 @@ describe('Schema violation errors', () => {
     const errorMsg =
       'instance.fieldset[0].fromEach.field is required\ninstance.fieldset[0].fromEach.fieldset[0] is not any of [subschema 0],[subschema 1]';
     expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg);
+  });
+});
+
+describe('FromEach mapping to flat object', () => {
+  it('should map the defined fields into a new object in the target object without inheriting the original structure', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'highLevel',
+            to: 'flat',
+            flat: true,
+            fieldset: [
+              {
+                from: 'fieldOne'
+              },
+              {
+                from: 'fieldTwo'
+              },
+              {
+                fromEach: {
+                  field: 'lowLevel',
+                  fieldset: [
+                    {
+                      from: 'fieldThree'
+                    },
+                    {
+                      from: 'fieldFour'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      highLevel: [
+        {
+          fieldOne: 1,
+          fieldTwo: 2,
+          lowLevel: [
+            {
+              fieldThree: 3,
+              fieldFour: 4
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      flat: [{ fieldOne: 1, fieldTwo: 2, fieldThree: 3, fieldFour: 4 }]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
   });
 });
