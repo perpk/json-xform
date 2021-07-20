@@ -40,13 +40,19 @@ const traverseFromEach = (source, xFormTemplate, prop, target) => {
         for (const item of fieldData) {
           if (
             !Object.keys(item).find((k) => {
-              return fieldset.from === k;
+              return (
+                fieldset.from === k ||
+                (fieldset.fromEach && fieldset.fromEach.field === k)
+              );
             })
           ) {
             continue;
           }
-          const fromItem = fieldset.from;
-          const toItem = fieldset.to || fromItem;
+          const fromItem = fieldset.from || fieldset.fromEach.field;
+          const toItem =
+            fieldset.to ||
+            (fieldset.fromEach && fieldset.fromEach.to) ||
+            fromItem;
           const fromValue = querySingleProp(item, fromItem);
           let currentTarget = addPropToTarget({}, toItem, fromValue);
           target[to].push(currentTarget);

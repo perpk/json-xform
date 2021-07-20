@@ -402,6 +402,40 @@ describe('Testing complex object', () => {
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
+
+  it('should correctly map nested fromEach blocks with fieldsets within', () => {
+    const xFormTemplate = {
+      fieldset: [{
+        fromEach: {
+          field: 'levelOne',
+          fieldset: [{
+            fromEach: {
+              field: 'array',
+              fieldset: [{
+                from: 'levelTwo'
+              }]
+            }
+          }]
+        }
+      }]
+    };
+    const source = {
+      levelOne: [{
+        array: [{
+          levelTwo: 'here\'s level two :2 y\'all!'
+        }]
+      }]
+    }
+    const target = {
+      levelOne: [{
+        array: [{
+          levelTwo: 'here\'s level two :2 y\'all!'
+        }]
+      }]
+    }
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
 });
 
 describe('Schema violation errors', () => {
