@@ -1,9 +1,7 @@
 const { readJSON } = require('./ioUtils');
 const { addPropToTarget } = require('./constructTarget');
-const {
-  querySingleProp,
-  queryAll
-} = require('./queryJson');
+const { querySingleProp, queryAll } = require('./queryJson');
+const { validateWithSchema, validationUtil } = require('../schema/validator');
 
 const commands = {
   FIELDSET: 'fieldset',
@@ -20,6 +18,10 @@ const mapWithTemplate = (sourceFile, xformTemplateFile) => {
 };
 
 const mapToNewObject = (source, xFormTemplate) => {
+  const result = validateWithSchema(xFormTemplate);
+  if (!result.valid) {
+    throw Error(validationUtil.getErrorMessage(result));
+  }
   return traverseTemplate(source, xFormTemplate);
 };
 
@@ -36,7 +38,11 @@ const traverseFromEach = (source, xFormTemplate, prop, target) => {
     if (prop === commands.FIELDSET) {
       for (fieldset of fromEachRef[prop]) {
         for (const item of fieldData) {
-          if (!Object.keys(item).find((k) => {return fieldset.from === k})) {
+          if (
+            !Object.keys(item).find((k) => {
+              return fieldset.from === k;
+            })
+          ) {
             continue;
           }
           const fromItem = fieldset.from;
@@ -54,13 +60,16 @@ const traverseFromEach = (source, xFormTemplate, prop, target) => {
 const traverseFieldset = (source, template, prop, target) => {
   template[prop].forEach((item) => {
     if (item.fromEach) {
-      target = {...target, ...traverseFromEach(source, item, 'fromEach', target)};
+      target = {
+        ...target,
+        ...traverseFromEach(source, item, 'fromEach', target)
+      };
     }
 
     if (item.from) {
       const from = item.from;
       const to = item.to || item.from;
-  
+
       const fromValue = querySingleProp(source, from);
       let currentTarget = addPropToTarget(target, to, fromValue);
       target = { ...target, ...currentTarget };
