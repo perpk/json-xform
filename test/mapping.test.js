@@ -472,6 +472,8 @@ describe('Schema violation errors', () => {
   });
 });
 
+/** 
+ *
 describe('FromEach mapping to flat object', () => {
   it('should map the defined fields into a new object in the target object without inheriting the original structure', () => {
     const xFormTemplate = {
@@ -527,3 +529,4 @@ describe('FromEach mapping to flat object', () => {
     expect(newObject).to.eqls(target);
   });
 });
+*/
