@@ -222,7 +222,10 @@ describe('Testing repetition groups', () => {
             field: 'repetitionGroup',
             fieldset: [
               {
-                from: 'singleProperty'
+                from: 'singlePropertyOne'
+              },
+              {
+                from: 'singlePropertyTwo'
               }
             ]
           }
@@ -233,21 +236,19 @@ describe('Testing repetition groups', () => {
       repetitionGroup: [
         {
           propertyToIgnore: 'value to ignore',
-          singleProperty: 'value to copy!'
+          singlePropertyOne: 'value to copy!'
         },
         {
           anotherPropertyToIgnore: 'value to ignore too',
-          singleProperty: 'another value to copy!'
+          singlePropertyTwo: 'another value to copy!'
         }
       ]
     };
     const target = {
       repetitionGroup: [
         {
-          singleProperty: 'value to copy!'
-        },
-        {
-          singleProperty: 'another value to copy!'
+          singlePropertyOne: 'value to copy!',
+          singlePropertyTwo: 'another value to copy!'
         }
       ]
     };
@@ -329,9 +330,7 @@ describe('Testing complex object', () => {
       yourProp: 'myValue',
       yourField: [
         {
-          yourNestedProp: 'myNestedPropValue'
-        },
-        {
+          yourNestedProp: 'myNestedPropValue',
           yourOtherNestedProp: 'myOtherNestedPropValue'
         }
       ]
@@ -388,9 +387,7 @@ describe('Testing complex object', () => {
         {
           secondLevelGroup: [
             {
-              yourVeryNestedProp: 'myVeryNestedValue'
-            },
-            {
+              yourVeryNestedProp: 'myVeryNestedValue',
               yourOtherVeryNestedProp: 'myOtherVeryNestedValue'
             }
           ]
@@ -472,61 +469,5 @@ describe('Schema violation errors', () => {
     const errorMsg =
       'instance.fieldset[0].fromEach.field is required\ninstance.fieldset[0].fromEach.fieldset[0] is not any of [subschema 0],[subschema 1]';
     expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg);
-  });
-});
-
-describe('FromEach mapping to flat object', () => {
-  it('should map the defined fields into a new object in the target object without inheriting the original structure', () => {
-    const xFormTemplate = {
-      fieldset: [
-        {
-          fromEach: {
-            field: 'highLevel',
-            to: 'flat',
-            flat: true,
-            fieldset: [
-              {
-                from: 'fieldOne'
-              },
-              {
-                from: 'fieldTwo'
-              },
-              {
-                fromEach: {
-                  field: 'lowLevel',
-                  fieldset: [
-                    {
-                      from: 'fieldThree'
-                    },
-                    {
-                      from: 'fieldFour'
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
-      ]
-    };
-    const source = {
-      highLevel: [
-        {
-          fieldOne: 1,
-          fieldTwo: 2,
-          lowLevel: [
-            {
-              fieldThree: 3,
-              fieldFour: 4
-            }
-          ]
-        }
-      ]
-    };
-    const target = {
-      flat: [{ fieldOne: 1, fieldTwo: 2, fieldThree: 3, fieldFour: 4 }]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
   });
 });
