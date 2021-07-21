@@ -222,7 +222,10 @@ describe('Testing repetition groups', () => {
             field: 'repetitionGroup',
             fieldset: [
               {
-                from: 'singleProperty'
+                from: 'singlePropertyOne'
+              },
+              {
+                from: 'singlePropertyTwo'
               }
             ]
           }
@@ -233,21 +236,19 @@ describe('Testing repetition groups', () => {
       repetitionGroup: [
         {
           propertyToIgnore: 'value to ignore',
-          singleProperty: 'value to copy!'
+          singlePropertyOne: 'value to copy!'
         },
         {
           anotherPropertyToIgnore: 'value to ignore too',
-          singleProperty: 'another value to copy!'
+          singlePropertyTwo: 'another value to copy!'
         }
       ]
     };
     const target = {
       repetitionGroup: [
         {
-          singleProperty: 'value to copy!'
-        },
-        {
-          singleProperty: 'another value to copy!'
+          singlePropertyOne: 'value to copy!',
+          singlePropertyTwo: 'another value to copy!'
         }
       ]
     };
@@ -320,9 +321,7 @@ describe('Testing complex object', () => {
       myProp: 'myValue',
       myField: [
         {
-          myNestedProp: 'myNestedPropValue'
-        },
-        {
+          myNestedProp: 'myNestedPropValue',
           myOtherNestedProp: 'myOtherNestedPropValue'
         }
       ]
@@ -331,9 +330,7 @@ describe('Testing complex object', () => {
       yourProp: 'myValue',
       yourField: [
         {
-          yourNestedProp: 'myNestedPropValue'
-        },
-        {
+          yourNestedProp: 'myNestedPropValue',
           yourOtherNestedProp: 'myOtherNestedPropValue'
         }
       ]
@@ -390,9 +387,7 @@ describe('Testing complex object', () => {
         {
           secondLevelGroup: [
             {
-              yourVeryNestedProp: 'myVeryNestedValue'
-            },
-            {
+              yourVeryNestedProp: 'myVeryNestedValue',
               yourOtherVeryNestedProp: 'myOtherVeryNestedValue'
             }
           ]
@@ -405,34 +400,48 @@ describe('Testing complex object', () => {
 
   it('should correctly map nested fromEach blocks with fieldsets within', () => {
     const xFormTemplate = {
-      fieldset: [{
-        fromEach: {
-          field: 'levelOne',
-          fieldset: [{
-            fromEach: {
-              field: 'array',
-              fieldset: [{
-                from: 'levelTwo'
-              }]
-            }
-          }]
+      fieldset: [
+        {
+          fromEach: {
+            field: 'levelOne',
+            fieldset: [
+              {
+                fromEach: {
+                  field: 'array',
+                  fieldset: [
+                    {
+                      from: 'levelTwo'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
-      }]
+      ]
     };
     const source = {
-      levelOne: [{
-        array: [{
-          levelTwo: 'here\'s level two :2 y\'all!'
-        }]
-      }]
-    }
+      levelOne: [
+        {
+          array: [
+            {
+              levelTwo: "here's level two :2 y'all!"
+            }
+          ]
+        }
+      ]
+    };
     const target = {
-      levelOne: [{
-        array: [{
-          levelTwo: 'here\'s level two :2 y\'all!'
-        }]
-      }]
-    }
+      levelOne: [
+        {
+          array: [
+            {
+              levelTwo: "here's level two :2 y'all!"
+            }
+          ]
+        }
+      ]
+    };
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });

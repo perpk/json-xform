@@ -25,50 +25,40 @@ const mapToNewObject = (source, xFormTemplate) => {
   return traverseTemplate(source, xFormTemplate);
 };
 
-const traverseFromEach = (source, xFormTemplate, prop, target) => {
-  const fromEachRef = xFormTemplate[prop];
-  const field = fromEachRef.field;
-  const to = fromEachRef.to || field;
-  const fieldData = queryAll(source, field);
+const traverseFromEach = (source, fromEachTemplate, target) => {
+  const field = fromEachTemplate.field;
+  const to = fromEachTemplate.to || field;
+  const fieldSources = queryAll(source, field);
   target[to] = new Array();
-  for (const prop in fromEachRef) {
-    if (prop === commands.FROMEACH) {
-      target[to].push(traverseFromEach(fieldData, fromEachRef, prop, {}));
-    }
-    if (prop === commands.FIELDSET) {
-      for (fieldset of fromEachRef[prop]) {
-        for (const item of fieldData) {
-          if (
-            !Object.keys(item).find((k) => {
-              return (
-                fieldset.from === k ||
-                (fieldset.fromEach && fieldset.fromEach.field === k)
-              );
-            })
-          ) {
-            continue;
-          }
-          const fromItem = fieldset.from || fieldset.fromEach.field;
-          const toItem =
-            fieldset.to ||
-            (fieldset.fromEach && fieldset.fromEach.to) ||
-            fromItem;
-          const fromValue = querySingleProp(item, fromItem);
-          let currentTarget = addPropToTarget({}, toItem, fromValue);
-          target[to].push(currentTarget);
-        }
-      }
-    }
+  if (fromEachTemplate.fieldset) {
+    target[to].push(
+      traverseFieldsets(fieldSources, fromEachTemplate.fieldset)
+    );
+  } else if (fromEachTemplate.fromEach) {
+    target[to].push(
+      traverseFromEach(fieldSources, fromEachTemplate.fromEach, {})
+    );
+  } else {
+    target[to].push(fieldSources);
   }
+
   return target;
 };
 
-const traverseFieldset = (source, template, prop, target) => {
-  template[prop].forEach((item) => {
+const traverseFieldsets = (sources, parentTemplate) => {
+  let fieldsetTarget = {};
+  sources.forEach((item) => {
+    fieldsetTarget = traverseFieldset(item, parentTemplate, fieldsetTarget);
+  });
+  return fieldsetTarget;
+};
+
+const traverseFieldset = (source, fieldsetTemplate, target) => {
+  fieldsetTemplate.forEach((item) => {
     if (item.fromEach) {
       target = {
         ...target,
-        ...traverseFromEach(source, item, 'fromEach', target)
+        ...traverseFromEach(source, item[commands.FROMEACH], target)
       };
     }
 
@@ -85,17 +75,7 @@ const traverseFieldset = (source, template, prop, target) => {
 };
 
 const traverseTemplate = (source, xFormTemplate) => {
-  let target = {};
-  for (const prop in xFormTemplate) {
-    let currentTarget;
-    if (prop === commands.FIELDSET) {
-      currentTarget = traverseFieldset(source, xFormTemplate, prop, target);
-    } else if (prop === commands.FROMEACH) {
-      currentTarget = traverseFromEach(source, xFormTemplate, prop, target);
-    }
-    target = { ...target, ...currentTarget };
-  }
-  return target;
+  return traverseFieldset(source, xFormTemplate[commands.FIELDSET], {});
 };
 
 module.exports = { mapToNewObject, mapWithTemplate, traverseTemplate };
