@@ -42,6 +42,7 @@ describe('Successful validations of correct JSON mappings :)', () => {
           to: 'target',
           fromEach: {
             field: 'fromEachField',
+            flatten: true,
             fieldset: [
               { from: 'sourceOne', to: 'targetOne' },
               { from: 'sourceTwo', to: 'targetTwo' },
@@ -85,12 +86,34 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
     expect(result.valid).to.false;
   });
 
-  it("should find a JSON invalid if the fromEach block doesn't contain the mandatory field(s)", () => {
+  it('should find a JSON invalid if the fromEach block doesn\'t contain the mandatory field(s)', () => {
     const jsonToValidate = {
       fieldset: [
         {
           fromEach: {
             to: 'fromEachTargetField',
+            fieldset: [
+              {
+                from: 'this field',
+                to: 'that field'
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
+  });
+
+  it ('should find a JSON invalid if the flatten mapping property is of the wrong type', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'fromField',
+            to: 'fromEachTargetField',
+            flatten: 2,
             fieldset: [
               {
                 from: 'this field',

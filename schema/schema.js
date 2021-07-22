@@ -15,6 +15,7 @@ const schema = {
             properties: {
               field: { type: 'string', required: true },
               to: { type: 'string' },
+              flatten: {type: 'boolean'},
               fieldset: { $ref: '/Fieldset' }
             }
           }
