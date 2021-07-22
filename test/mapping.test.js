@@ -635,8 +635,8 @@ describe('FromEach mapping to flat object', () => {
                         field: 'basement',
                         fieldset: [
                           {
-                            from: 'this',
-                            to: 'that'
+                            from: 'this.thing.there',
+                            to: 'that.here'
                           }
                         ]
                       }
@@ -660,7 +660,11 @@ describe('FromEach mapping to flat object', () => {
               fieldFour: 4,
               basement: [
                 {
-                  this: 'value'
+                  this: {
+                    thing: {
+                      there: 'here I am'
+                    }
+                  }
                 }
               ]
             }
@@ -675,7 +679,9 @@ describe('FromEach mapping to flat object', () => {
           fieldTwo: 2,
           fieldThree: 3,
           fieldFour: 4,
-          that: 'value'
+          that: {
+            here: 'here I am'
+          }
         }
       ]
     };
