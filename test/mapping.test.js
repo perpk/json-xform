@@ -471,3 +471,215 @@ describe('Schema violation errors', () => {
     expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg);
   });
 });
+
+describe('FromEach mapping to flat object', () => {
+  it("should flatten the next fromEach's fieldset if marked so", () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'highLevel',
+            to: 'flat',
+            flatten: true,
+            fieldset: [
+              {
+                from: 'fieldOne'
+              },
+              {
+                from: 'fieldTwo'
+              },
+              {
+                fromEach: {
+                  field: 'lowLevel',
+                  fieldset: [
+                    {
+                      from: 'fieldThree'
+                    },
+                    {
+                      from: 'fieldFour'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      highLevel: [
+        {
+          fieldOne: 1,
+          fieldTwo: 2,
+          lowLevel: [
+            {
+              fieldThree: 3,
+              fieldFour: 4
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      flat: [{ fieldOne: 1, fieldTwo: 2, fieldThree: 3, fieldFour: 4 }]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+
+  it("should flatten only the next fromEach's fieldset and not more than that", () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'highLevel',
+            to: 'flat',
+            flatten: true,
+            fieldset: [
+              {
+                from: 'fieldOne'
+              },
+              {
+                from: 'fieldTwo'
+              },
+              {
+                fromEach: {
+                  field: 'lowLevel',
+                  fieldset: [
+                    {
+                      from: 'fieldThree'
+                    },
+                    {
+                      from: 'fieldFour'
+                    },
+                    {
+                      fromEach: {
+                        field: 'basement',
+                        fieldset: [
+                          {
+                            from: 'this',
+                            to: 'that'
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      highLevel: [
+        {
+          fieldOne: 1,
+          fieldTwo: 2,
+          lowLevel: [
+            {
+              fieldThree: 3,
+              fieldFour: 4,
+              basement: [
+                {
+                  this: 'value'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      flat: [
+        {
+          fieldOne: 1,
+          fieldTwo: 2,
+          fieldThree: 3,
+          fieldFour: 4,
+          basement: [{ that: 'value' }]
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+  it("should flatten all fromEach blocks if marked so", () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'highLevel',
+            to: 'flat',
+            flatten: true,
+            fieldset: [
+              {
+                from: 'fieldOne'
+              },
+              {
+                from: 'fieldTwo'
+              },
+              {
+                fromEach: {
+                  field: 'lowLevel',
+                  flatten: true,
+                  fieldset: [
+                    {
+                      from: 'fieldThree'
+                    },
+                    {
+                      from: 'fieldFour'
+                    },
+                    {
+                      fromEach: {
+                        field: 'basement',
+                        fieldset: [
+                          {
+                            from: 'this',
+                            to: 'that'
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      highLevel: [
+        {
+          fieldOne: 1,
+          fieldTwo: 2,
+          lowLevel: [
+            {
+              fieldThree: 3,
+              fieldFour: 4,
+              basement: [
+                {
+                  this: 'value'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      flat: [
+        {
+          fieldOne: 1,
+          fieldTwo: 2,
+          fieldThree: 3,
+          fieldFour: 4,
+          that: 'value'
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);    
+  });
+});
