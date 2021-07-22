@@ -25,21 +25,48 @@ const mapToNewObject = (source, xFormTemplate) => {
   return traverseTemplate(source, xFormTemplate);
 };
 
+const flattenEverything = (everything) => {
+  let copyEverything = Object.assign({}, everything);
+  for (const [key, val] of Object.entries(everything)) {
+    if (val.constructor === Array) {
+      let explodedArray = Object.assign({}, ...val);
+      delete copyEverything[key];
+      copyEverything = {...copyEverything, ...explodedArray};
+    }
+  }
+  return copyEverything;
+};
+
+const addBlockToTarget = (block, target, flatten) => {
+  let newTarget = [...target];
+  if (flatten) {
+    newTarget.push(flattenEverything(block));
+  } else {
+    newTarget.push(block);
+  }
+  return newTarget;
+};
+
 const traverseFromEach = (source, fromEachTemplate, target) => {
   const field = fromEachTemplate.field;
   const to = fromEachTemplate.to || field;
+  const flatten = fromEachTemplate.flatten || false;
   const fieldSources = queryAll(source, field);
   target[to] = new Array();
   if (fromEachTemplate.fieldset) {
-    target[to].push(
-      traverseFieldsets(fieldSources, fromEachTemplate.fieldset)
+    target[to] = addBlockToTarget(
+      traverseFieldsets(fieldSources, fromEachTemplate.fieldset),
+      target[to],
+      flatten
     );
   } else if (fromEachTemplate.fromEach) {
-    target[to].push(
-      traverseFromEach(fieldSources, fromEachTemplate.fromEach, {})
+    target[to] = addBlockToTarget(
+      traverseFromEach(fieldSources, fromEachTemplate.fromEach, {}),
+      target[to],
+      flatten
     );
   } else {
-    target[to].push(fieldSources);
+    target[to] = addBlockToTarget(fieldSources, target[to], flatten);
   }
 
   return target;
