@@ -28,10 +28,13 @@ const mapToNewObject = (source, xFormTemplate) => {
 const flattenEverything = (everything) => {
   let copyEverything = Object.assign({}, everything);
   for (const [key, val] of Object.entries(everything)) {
-    if (val.constructor === Array) {
+    if (val.constructor === Array && val.length === 1) {
       let explodedArray = Object.assign({}, ...val);
-      delete copyEverything[key];
       copyEverything = {...copyEverything, ...explodedArray};
+      delete copyEverything[key];
+    } else if (val.constructor === Array && val.length > 1) {
+      copyEverything = val.slice();
+      delete copyEverything[key];
     }
   }
   return copyEverything;
@@ -40,9 +43,14 @@ const flattenEverything = (everything) => {
 const addBlockToTarget = (block, target, flatten) => {
   let newTarget = [...target];
   if (flatten) {
-    newTarget.push(flattenEverything(block));
+    let flattened = flattenEverything(block);
+    if (flattened.constructor === Array) {
+      newTarget.push(...flattened);
+    } else {
+      newTarget.push(flattened);
+    }
   } else {
-    newTarget.push(block);
+    block.constructor === Array ? newTarget.push(...block) : newTarget.push(block);
   }
   return newTarget;
 };
@@ -55,7 +63,7 @@ const traverseFromEach = (source, fromEachTemplate, target) => {
   target[to] = new Array();
   if (fromEachTemplate.fieldset) {
     target[to] = addBlockToTarget(
-      traverseFieldsets(fieldSources, fromEachTemplate.fieldset),
+      traverseFieldsets(fieldSources, fromEachTemplate.fieldset, flatten),
       target[to],
       flatten
     );
@@ -72,10 +80,14 @@ const traverseFromEach = (source, fromEachTemplate, target) => {
   return target;
 };
 
-const traverseFieldsets = (sources, parentTemplate) => {
-  let fieldsetTarget = {};
+const traverseFieldsets = (sources, parentTemplate, flatten) => {
+  let fieldsetTarget = flatten ? {} : new Array();
   sources.forEach((item) => {
-    fieldsetTarget = traverseFieldset(item, parentTemplate, fieldsetTarget);
+    if (!flatten) {
+      fieldsetTarget.push(traverseFieldset(item, parentTemplate, {}));
+    } else {
+      fieldsetTarget = traverseFieldset(item, parentTemplate, fieldsetTarget);
+    }
   });
   return fieldsetTarget;
 };
@@ -94,6 +106,9 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
       const to = item.to || item.from;
 
       const fromValue = querySingleProp(source, from);
+      if(!fromValue) {
+        return;
+      }
       let currentTarget = addPropToTarget(target, to, fromValue);
       target = { ...target, ...currentTarget };
     }

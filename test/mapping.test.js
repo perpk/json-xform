@@ -247,7 +247,9 @@ describe('Testing repetition groups', () => {
     const target = {
       repetitionGroup: [
         {
-          singlePropertyOne: 'value to copy!',
+          singlePropertyOne: 'value to copy!'
+        },
+        {
           singlePropertyTwo: 'another value to copy!'
         }
       ]
@@ -387,7 +389,9 @@ describe('Testing complex object', () => {
         {
           secondLevelGroup: [
             {
-              yourVeryNestedProp: 'myVeryNestedValue',
+              yourVeryNestedProp: 'myVeryNestedValue'
+            },
+            {
               yourOtherVeryNestedProp: 'myOtherVeryNestedValue'
             }
           ]
@@ -411,6 +415,9 @@ describe('Testing complex object', () => {
                   fieldset: [
                     {
                       from: 'levelTwo'
+                    },
+                    {
+                      from: 'sameAsLevelTwo'
                     }
                   ]
                 }
@@ -425,7 +432,12 @@ describe('Testing complex object', () => {
         {
           array: [
             {
-              levelTwo: "here's level two :2 y'all!"
+              levelTwo: "here's level two :2 y'all!",
+              sameAsLevelTwo: "I'm at the same level as 2"
+            },
+            {
+              levelTwo: "Here's another level two!",
+              sameAsLevelTwo: 'And the same thing again!!!'
             }
           ]
         }
@@ -436,7 +448,12 @@ describe('Testing complex object', () => {
         {
           array: [
             {
-              levelTwo: "here's level two :2 y'all!"
+              levelTwo: "here's level two :2 y'all!",
+              sameAsLevelTwo: "I'm at the same level as 2"
+            },
+            {
+              levelTwo: "Here's another level two!",
+              sameAsLevelTwo: 'And the same thing again!!!'
             }
           ]
         }
@@ -604,7 +621,7 @@ describe('FromEach mapping to flat object', () => {
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
-  it("should flatten all fromEach blocks if marked so", () => {
+  it('should flatten all fromEach blocks if marked so', () => {
     const xFormTemplate = {
       fieldset: [
         {
@@ -686,6 +703,80 @@ describe('FromEach mapping to flat object', () => {
       ]
     };
     const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);    
+    expect(newObject).to.eqls(target);
+  });
+
+  it('should flatten a nested object with repetition groups and keep all items of that group', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'delfi',
+            flatten: true,
+            fieldset: [
+              {
+                fromEach: {
+                  field: 'cacheMorf',
+                  fieldset: [
+                    {
+                      from: 'teflon'
+                    },
+                    {
+                      from: 'iron'
+                    },
+                    {
+                      from: 'obsidian'
+                    },
+                    {
+                      from: 'lazurite'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      delfi: [{ 
+        cacheMorf: [
+          {
+            teflon: "Teflon",
+            iron: "Iron",
+            obsidian: "Obsidian",
+            lazurite: "Lazurite"
+          },
+          {
+            iron: "nori",
+            obsidian: "nobisidan"
+          },
+          {
+            teflon: "noflet",
+            lazurite: "terizula"
+          }
+        ] 
+      }]
+    };
+    const target = {
+      delfi: [
+        {
+          teflon: "Teflon",
+          iron: "Iron",
+          obsidian: "Obsidian",
+          lazurite: "Lazurite"
+        },
+        {
+          iron: "nori",
+          obsidian: "nobisidan"
+        },
+        {
+          teflon: "noflet",
+          lazurite: "terizula"
+        }
+      ]
+    }
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
   });
 });
