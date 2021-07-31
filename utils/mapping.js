@@ -60,7 +60,9 @@ const traverseFromEach = (source, fromEachTemplate, target) => {
   const to = fromEachTemplate.to || field;
   const flatten = fromEachTemplate.flatten || false;
   const fieldSources = queryAll(source, field);
-  target[to] = new Array();
+  if (!Object.keys(target).find((k) => k === to)) {
+    target[to] = new Array();
+  }
   if (fromEachTemplate.fieldset) {
     target[to] = addBlockToTarget(
       traverseFieldsets(fieldSources, fromEachTemplate.fieldset, flatten),
