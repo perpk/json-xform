@@ -739,43 +739,128 @@ describe('FromEach mapping to flat object', () => {
       ]
     };
     const source = {
-      delfi: [{ 
-        cacheMorf: [
-          {
-            teflon: "Teflon",
-            iron: "Iron",
-            obsidian: "Obsidian",
-            lazurite: "Lazurite"
-          },
-          {
-            iron: "nori",
-            obsidian: "nobisidan"
-          },
-          {
-            teflon: "noflet",
-            lazurite: "terizula"
-          }
-        ] 
-      }]
+      delfi: [
+        {
+          cacheMorf: [
+            {
+              teflon: 'Teflon',
+              iron: 'Iron',
+              obsidian: 'Obsidian',
+              lazurite: 'Lazurite'
+            },
+            {
+              iron: 'nori',
+              obsidian: 'nobisidan'
+            },
+            {
+              teflon: 'noflet',
+              lazurite: 'terizula'
+            }
+          ]
+        }
+      ]
     };
     const target = {
       delfi: [
         {
-          teflon: "Teflon",
-          iron: "Iron",
-          obsidian: "Obsidian",
-          lazurite: "Lazurite"
+          teflon: 'Teflon',
+          iron: 'Iron',
+          obsidian: 'Obsidian',
+          lazurite: 'Lazurite'
         },
         {
-          iron: "nori",
-          obsidian: "nobisidan"
+          iron: 'nori',
+          obsidian: 'nobisidan'
         },
         {
-          teflon: "noflet",
-          lazurite: "terizula"
+          teflon: 'noflet',
+          lazurite: 'terizula'
         }
       ]
-    }
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+
+  it('should include data from all data of nested repetition groups when flattened', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'root',
+            flatten: true,
+            fieldset: [
+              {
+                fromEach: {
+                  field: 'collection',
+                  fieldset: [
+                    {
+                      from: 'fieldOne'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      root: [
+        {
+          collection: [
+            {
+              fieldOne: 1
+            }
+          ]
+        },
+        {
+          collection: [
+            {
+              fieldOne: 2
+            },
+            {
+              fieldOne: 3
+            }
+          ]
+        },
+        {
+          collection: [
+            {
+              fieldOne: 4
+            },
+            {
+              fieldOne: 5
+            },
+            {
+              fieldOne: 6
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      root: [
+        {
+          fieldOne: 1
+        },
+        {
+          fieldOne: 2
+        },
+        {
+          fieldOne: 3
+        },
+        {
+          fieldOne: 4
+        },
+        {
+          fieldOne: 5
+        },
+        {
+          fieldOne: 6
+        }
+      ]
+    };
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
