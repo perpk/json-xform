@@ -895,7 +895,8 @@ describe('FromEach mapping to flat object', () => {
               fieldThree: 3,
               branch: [
                 {
-                  branchFieldOne: 10
+                  branchFieldOne: 10,
+                  branchFieldTwo: 22
                 },
                 {
                   branchFieldOne: 11
@@ -916,6 +917,84 @@ describe('FromEach mapping to flat object', () => {
           fieldTwo: 2,
           fieldThree: 3,
           branchFieldOne: [10, 11, 12]
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+  it('should correctly flatten a nested fieldset without overwriting contents of the object it is flattened to - case of single element collection in deepest nesting level', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'root',
+            flatten: true,
+            fieldset: [
+              {
+                fromEach: {
+                  field: 'body',
+                  flatten: true,
+                  fieldset: [
+                    {
+                      from: 'fieldOne'
+                    },
+                    {
+                      from: 'fieldTwo'
+                    },
+                    {
+                      from: 'fieldThree'
+                    },
+                    {
+                      fromEach: {
+                        field: 'branch',
+                        fieldset: [
+                          {
+                            from: 'branchFieldTwo'
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      root: [
+        {
+          body: [
+            {
+              fieldOne: 1,
+              fieldTwo: 2,
+              fieldThree: 3,
+              branch: [
+                {
+                  branchFieldOne: 10,
+                  branchFieldTwo: 22
+                },
+                {
+                  branchFieldOne: 11
+                },
+                {
+                  branchFieldOne: 12
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      root: [
+        {
+          fieldOne: 1,
+          fieldTwo: 2,
+          fieldThree: 3,
+          branchFieldTwo: [22]
         }
       ]
     };

@@ -38,7 +38,9 @@ const flattenEverything = (everything) => {
         const onlyKey = allKeys[0];
         const pureValues = new Array();
         Object.values(val).forEach((value) => {
-          pureValues.push(value[onlyKey]);
+          if (value[onlyKey]) {
+            pureValues.push(value[onlyKey]);
+          }
         });
         copyEverything[onlyKey] = pureValues;
       } else {
