@@ -840,24 +840,161 @@ describe('FromEach mapping to flat object', () => {
       ]
     };
     const target = {
+      root: [{ fieldOne: [1, 2, 3, 4, 5, 6] }]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+  it('should correctly flatten a nested fieldset without overwriting contents of the object it is flattened to', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'root',
+            flatten: true,
+            fieldset: [
+              {
+                fromEach: {
+                  field: 'body',
+                  flatten: true,
+                  fieldset: [
+                    {
+                      from: 'fieldOne'
+                    },
+                    {
+                      from: 'fieldTwo'
+                    },
+                    {
+                      from: 'fieldThree'
+                    },
+                    {
+                      fromEach: {
+                        field: 'branch',
+                        fieldset: [
+                          {
+                            from: 'branchFieldOne'
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
       root: [
         {
-          fieldOne: 1
-        },
+          body: [
+            {
+              fieldOne: 1,
+              fieldTwo: 2,
+              fieldThree: 3,
+              branch: [
+                {
+                  branchFieldOne: 10,
+                  branchFieldTwo: 22
+                },
+                {
+                  branchFieldOne: 11
+                },
+                {
+                  branchFieldOne: 12
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      root: [
         {
-          fieldOne: 2
-        },
+          fieldOne: 1,
+          fieldTwo: 2,
+          fieldThree: 3,
+          branchFieldOne: [10, 11, 12]
+        }
+      ]
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+  it('should correctly flatten a nested fieldset without overwriting contents of the object it is flattened to - case of single element collection in deepest nesting level', () => {
+    const xFormTemplate = {
+      fieldset: [
         {
-          fieldOne: 3
-        },
+          fromEach: {
+            field: 'root',
+            flatten: true,
+            fieldset: [
+              {
+                fromEach: {
+                  field: 'body',
+                  flatten: true,
+                  fieldset: [
+                    {
+                      from: 'fieldOne'
+                    },
+                    {
+                      from: 'fieldTwo'
+                    },
+                    {
+                      from: 'fieldThree'
+                    },
+                    {
+                      fromEach: {
+                        field: 'branch',
+                        fieldset: [
+                          {
+                            from: 'branchFieldTwo'
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const source = {
+      root: [
         {
-          fieldOne: 4
-        },
+          body: [
+            {
+              fieldOne: 1,
+              fieldTwo: 2,
+              fieldThree: 3,
+              branch: [
+                {
+                  branchFieldOne: 10,
+                  branchFieldTwo: 22
+                },
+                {
+                  branchFieldOne: 11
+                },
+                {
+                  branchFieldOne: 12
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+    const target = {
+      root: [
         {
-          fieldOne: 5
-        },
-        {
-          fieldOne: 6
+          fieldOne: 1,
+          fieldTwo: 2,
+          fieldThree: 3,
+          branchFieldTwo: [22]
         }
       ]
     };

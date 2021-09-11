@@ -33,7 +33,19 @@ const flattenEverything = (everything) => {
       copyEverything = {...copyEverything, ...explodedArray};
       delete copyEverything[key];
     } else if (val.constructor === Array && val.length > 1) {
-      copyEverything = val.slice();
+      const allKeys = Object.keys(...val);
+      if (allKeys.length === 1) {
+        const onlyKey = allKeys[0];
+        const pureValues = new Array();
+        Object.values(val).forEach((value) => {
+          if (value[onlyKey]) {
+            pureValues.push(value[onlyKey]);
+          }
+        });
+        copyEverything[onlyKey] = pureValues;
+      } else {
+        copyEverything = val.slice();
+      }
       delete copyEverything[key];
     }
   }
@@ -84,6 +96,9 @@ const traverseFromEach = (source, fromEachTemplate, target) => {
 
 const traverseFieldsets = (sources, parentTemplate, flatten) => {
   let fieldsetTarget = flatten ? {} : new Array();
+  if (sources.constructor !== Array) {
+    sources = [sources];
+  }
   sources.forEach((item) => {
     if (!flatten) {
       fieldsetTarget.push(traverseFieldset(item, parentTemplate, {}));
