@@ -1,7 +1,7 @@
 const jsonpath = require('jsonpath');
 
 const querySingleProp = (json, prop) => {
-  return jsonpath.query(json, '$.' + prop)[0];
+  return jsonpath.query(json, constructQueryForProp(prop))[0];
 };
 
 const queryAll = (json, prop) => {
@@ -10,6 +10,13 @@ const queryAll = (json, prop) => {
 
 const queryArrayElements = (json, array, prop) => {
   return jsonpath.query(json, '$.' + array + '..' + prop);
+};
+
+const constructQueryForProp = (prop) => {
+  if (!prop.match(/[^a-zA-Z0-9.]+/)) {
+    return `$.${prop}`;
+  }
+  return `$['${prop}']`;
 };
 
 module.exports = { querySingleProp, queryAll, queryArrayElements };
