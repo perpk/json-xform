@@ -1001,4 +1001,27 @@ describe('FromEach mapping to flat object', () => {
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
+  it('should perform the mapping correctly also if special chars are in the values', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: 'name'
+        },
+        {
+          from: '$job',
+          to: 'myJob'
+        }
+      ]
+    };
+    const source = {
+      name: 'Mark',
+      $job: 'programmer'
+    };
+    const target = {
+      name: 'Mark',
+      myJob: 'programmer'
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
 });
