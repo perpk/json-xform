@@ -13,7 +13,7 @@ const queryArrayElements = (json, array, prop) => {
 };
 
 const constructQueryForProp = (prop) => {
-  if (!prop.match(/^\W+/)) {
+  if (!prop.match(/[^a-zA-Z0-9.]+/)) {
     return `$.${prop}`;
   }
   return `$['${prop}']`;
