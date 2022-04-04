@@ -1002,3 +1002,54 @@ describe('FromEach mapping to flat object', () => {
     expect(newObject).to.eqls(target);
   });
 });
+
+describe('Special non-word characters in the source object', () => {
+  it('should perform the mapping correctly also if property names start with a non-word char', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: 'name'
+        },
+        {
+          from: '$job',
+          to: 'myJob'
+        }
+      ]
+    };
+    const source = {
+      name: 'Mark',
+      $job: 'programmer'
+    };
+    const target = {
+      name: 'Mark',
+      myJob: 'programmer'
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+
+  it('should perform the mapping correctly also if non-word chars are mixed within the property names', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: '_name'
+        },
+        {
+          from: '$j&ob',
+          to: 'myJob'
+        }
+      ]
+    };
+    const source = {
+      _name: 'Mark',
+      '$j&ob': 'programmer'
+    };
+    const target = {
+      _name: 'Mark',
+      myJob: 'programmer'
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
+});
+
