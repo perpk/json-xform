@@ -23,6 +23,7 @@ jobs:
       - name: Test Report
         uses: dorny/test-reporter@v1
         with:
+          name: 'Mocha Tests'
           reporter: 'mocha-json'
           artifact: 'mocha-report.json'
       - name: Coverage Report
