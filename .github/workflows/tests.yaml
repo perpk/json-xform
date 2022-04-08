@@ -27,6 +27,7 @@ jobs:
           reporter: 'mocha-json'
           path: './mocha-report.json'
       - name: Coverage Report
-        uses: sidx1024/report-nyc-coverage-github-action@v1.1
+        uses: sidx1024/report-nyc-coverage-github-action@v1.0.0
         with:
+          base_coverage_file: 'coverage/coverage-summary.json'
           coverage_file: 'coverage/coverage-summary.json'
