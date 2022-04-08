@@ -25,8 +25,7 @@ jobs:
         with:
           name: 'Mocha Tests'
           reporter: 'mocha-json'
-          path: './'
-          artifact: 'mocha-report.json'
+          path: './mocha-report.json'
       - name: Coverage Report
         uses: sidx1024/report-nyc-coverage-github-action@v1.1
         with:
