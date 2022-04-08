@@ -10,7 +10,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha",
-    "test:reportJson": "nyc mocha --reporter json > mocha-report.json",
+    "test:reportJson": "nyc mocha --reporter json --reporter-option output=mocha-report.json",
     "test:report": "npx mocha --reporter mochawesome",
     "test:watch": "mocha --watch",
     "coverage:report": "npx nyc report --reporter json-summary"
