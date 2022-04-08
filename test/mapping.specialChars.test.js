@@ -51,4 +51,50 @@ describe('Special non-word characters in the source object', () => {
     const newObject = mapToNewObject(source, xFormTemplate);
     expect(newObject).to.eqls(target);
   });
+
+  it('should perform mapping from nested expressions with non-word chars correctly', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          from: '$data.fullName',
+          to: 'name'
+        },
+        {
+          from: '$data.$occupation',
+          to: 'occupation'
+        },
+        {
+          from: '$data.$age.value',
+          to: 'ageValue'
+        },
+        {
+          from: '$data.town.$name',
+          to: '$town.name'
+        },
+        {
+          from: '$data.town.$name',
+          to: '$addressTown'
+        }
+      ]
+    };
+    const source = {
+      $data: {
+        fullName: 'theName',
+        $occupation: 'dvlpr',
+        $age: { value: 12 },
+        town: { $name: 'Berlin' }
+      }
+    };
+    const target = {
+      name: 'theName',
+      occupation: 'dvlpr',
+      ageValue: 12,
+      $town: {
+        name: 'Berlin'
+      },
+      $addressTown: 'Berlin'
+    };
+    const newObject = mapToNewObject(source, xFormTemplate);
+    expect(newObject).to.eqls(target);
+  });
 });
