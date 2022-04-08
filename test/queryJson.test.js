@@ -3,7 +3,8 @@ const { describe, it } = require('mocha');
 const {
   querySingleProp,
   queryAll,
-  queryArrayElements
+  queryArrayElements,
+  constructQueryForProp
 } = require('../utils/queryJson');
 
 describe('Query properties from a JSON file', () => {
@@ -35,7 +36,7 @@ describe('Query properties from a JSON file', () => {
     expect(result).to.equal(json.arrayProp);
   });
 
-  it ('should query all elements of an array nested in an object', () => {
+  it('should query all elements of an array nested in an object', () => {
     const json = {
       wrappingObject: {
         arrayProp: [
@@ -90,5 +91,35 @@ describe('Query properties from a JSON file', () => {
       { address: '9803 Shelbyville Av.' },
       { address: 'Monorail St. 4A' }
     ]);
+  });
+});
+
+describe('Query based on non-word char chained props', () => {
+  it('should correctly construct the query in case the root prop contains non-word chars', () => {
+    const prop = '$data.fullName';
+
+    const result = constructQueryForProp(prop);
+    expect(result).to.eql("$['$data'].fullName");
+  });
+
+  it('should correctly construct the query in case root and child prop both contain non-word chars', () => {
+    const prop = '$data.$occupation';
+
+    const result = constructQueryForProp(prop);
+    expect(result).to.eql("$['$data']['$occupation']");
+  });
+
+  it("should correctly construct the query when having a chain of three props the first two have non-word chars but the third doesn't", () => {
+    const prop = '$data.$age.value';
+
+    const result = constructQueryForProp(prop);
+    expect(result).to.eql("$['$data']['$age'].value");
+  });
+
+  it("should correctly construct the query when having a chain of three props the root has non-word chars the middle doesn't and the last does", () => {
+    const prop = '$data.town.$name';
+
+    const result = constructQueryForProp(prop);
+    expect(result).to.eql("$['$data'].town['$name']");
   });
 });
