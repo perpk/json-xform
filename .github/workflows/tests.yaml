@@ -16,5 +16,16 @@ jobs:
           node-version: 12.x
       - name: Install Dependencies
         run: npm install
-      - name: Test
-        run: npm run test
+      - name: Mocha Tests
+        run: npm run test:reportJson
+      - name: Coverage
+        run: npm run coverage:report
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          reporter: 'mocha-json'
+          artifact: 'mocha-report.json'
+      - name: Coverage Report
+        uses: sidx1024/report-nyc-coverage-github-action@v1.1
+        with:
+          coverage_file: 'coverage/coverage-summary.json'

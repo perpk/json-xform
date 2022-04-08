@@ -33,3 +33,7 @@ npm-debug.log
 .DS_Store
 
 .nyc_output/
+
+mochawesome-report/
+
+mocha-report.json
