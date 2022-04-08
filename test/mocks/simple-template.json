@@ -1,0 +1,29 @@
+{
+    "fieldset": [
+        {
+            "from": "name"
+        },
+        {
+            "from": "lastname"
+        },
+        {
+            "from": "occupation"
+        },
+        {
+            "from": "street",
+            "to": "address.street"
+        },
+        {
+            "from": "city",
+            "to": "address.city"
+        },
+        {
+            "from": "state",
+            "to": "address.state"
+        },
+        {
+            "from": "postCode",
+            "to": "address.postCode"
+        }
+    ]
+}
