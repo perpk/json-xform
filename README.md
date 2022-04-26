@@ -15,9 +15,10 @@ The DSL is implemented in JSON. Its vocabulary is limited to five words.
 1. fieldset - defines an array of objects, each object encapsulates 
 2. from - defines the field to get the value from the source JSON.
 3. to - defines the field to write the value to the target JSON.
-4. fromEach - defines an object which addresses an array in the source JSON and provides the possibility to pick particular source fields to write to the target JSON by using the fieldset again.
-5. field - defines the field in the fromEach block to get the value from.
-6. flatten - to flatten collections.
+4. withTemplate - defines an arbitrary string with template placeholders which hold references to fields in the source object to get values from.
+5. fromEach - defines an object which addresses an array in the source JSON and provides the possibility to pick particular source fields to write to the target JSON by using the fieldset again.
+6. field - defines the field in the fromEach block to get the value from.
+7. flatten - to flatten collections.
 
 ## Dependencies
 The essential libraries used by this project are [jsonpath](https://www.npmjs.com/package/jsonpath) and [jsonschema](https://www.npmjs.com/package/jsonschema)
