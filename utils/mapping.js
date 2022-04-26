@@ -2,6 +2,7 @@ const { readJSON } = require('./ioUtils');
 const { addPropToTarget } = require('./constructTarget');
 const { querySingleProp, queryAll } = require('./queryJson');
 const { validateWithSchema, validationUtil } = require('../schema/validator');
+const { pickTemplateVarsFromString, wrapInVarBraces } = require('./stringUtils');
 
 const commands = {
   FIELDSET: 'fieldset',
@@ -121,25 +122,34 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
     }
 
     if (item.from) {
-      if (item.from.constructor !== Array) {
-        const from = item.from;
-        const to = item.to || item.from;
+      const from = item.from;
+      const to = item.to || item.from;
 
-        const fromValue = querySingleProp(source, from);
-        if (!fromValue) {
-          return;
-        }
-        let currentTarget = addPropToTarget(target, to, fromValue);
-        target = { ...target, ...currentTarget };
-      } else {
+      const fromValue = querySingleProp(source, from);
+      if (!fromValue) {
+        return;
+      }
+      let currentTarget = addPropToTarget(target, to, fromValue);
+      target = { ...target, ...currentTarget };
+    }
+
+    if (item.withTemplate) {
+      const to = item.to;
+      const templateVars = pickTemplateVarsFromString(item.withTemplate);
+      if (templateVars && templateVars.length > 0) {
         let pairs = {};
-        item.from.forEach((from) => {
-          pairs[from] = querySingleProp(source, from);
+        templateVars.forEach((item) => {
+          pairs[item] = querySingleProp(source, item);
         });
-        const to = item.to || item.from[0];
-        if (item.withTemplate) {
-          
+        let resolvedTemplate = item.withTemplate;
+        for (const [name, value] of Object.entries(pairs)) {
+          resolvedTemplate = resolvedTemplate.replace(wrapInVarBraces(name), value);
         }
+        let currentTarget = addPropToTarget(target, to, resolvedTemplate);
+        target = {...target, ...currentTarget};
+      } else {
+        let currentTarget = addPropToTarget(target, to, item.withTemplate);
+        target = { ...target, ...currentTarget };
       }
     }
   });
