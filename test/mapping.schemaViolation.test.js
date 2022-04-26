@@ -23,7 +23,7 @@ describe('Schema violation errors', () => {
       someProp: "doesn't really matter, since schema is invalid already :)"
     };
     const errorMsg =
-      'instance.fieldset[0].fromEach.field is required\ninstance.fieldset[0].fromEach.fieldset[0] is not any of [subschema 0],[subschema 1]';
+      'instance.fieldset[0].fromEach.field is required';
     expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg);
   });
 });

@@ -51,8 +51,3 @@ module.exports = {
   queryArrayElements,
   constructQueryForProp
 };
-
-// jsonpath.query(json, "$['$data'].fullName")[0];
-// jsonpath.query(json, "$['$data']['$occupation']")[0];
-// jsonpath.query(json, "$['$data']['$age'].value")[0];
-// jsonpath.query(json, "$['$data'].town['$name']")[0];
