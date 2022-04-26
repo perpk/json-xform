@@ -94,6 +94,10 @@ const mapping = {
                 from: 'fieldTwo'
               },
               {
+                to: 'newProp',
+                withTemplate: '${fieldOne} is not ${fieldTwo}'
+              }
+              {
                 fromEach: {
                   field: 'lowLevel',
                   flatten: true,
@@ -133,7 +137,7 @@ Woah! easy there, pilgrim! Let's break it down actually and take it from top to 
 
 3. The `fromEach` property **must** include at least a `field` (_string_) property, which declares the property in the source JSON object for get the value from. It always refers to an array type since it only may appear in the context of a `fromEach` block.
 
-4. The `to` (_string_) propery may be found in a `fromEach` block, as well as in a `fieldset`. It defines the field in the target object where the value shall be writte to. It isn't mandatory though, in case it's missing the field in the target object will have the same name as it's source counterpart.
+4. The `to` (_string_) propery may be found in a `fromEach` block, as well as in a `fieldset`. It defines the field in the target object where the value shall be writte to. It isn't mandatory if a from field is present, in case it's missing the field in the target object will have the same name as it's source counterpart.
 
 5. The `flatten`(_boolean_) property is optional. It can be used in case the array the `fromEach` refers to shall be extracted from the array. That means that the properties of any objects are extracted and placed one level above. The `flatten` property is only valid within the scope of a single `fromEach`. That means other, nested `fromEach` blocks aren't affected. If such nested blocks must be "flattened" as well, the `flatten` property may be set to `true` again in their own context. The default for the "flattening" is `false`.
 
@@ -141,7 +145,9 @@ Woah! easy there, pilgrim! Let's break it down actually and take it from top to 
 
 7. The `from` property denotes the key in the source object where the value shall be taken from. We can use chaining via dot (.) to cherry pick values out from nested object structures.
 
-8. The `to` property is the key in the target object where the value shall be written to. It is **not mandatory** - in case it's not there, the default applies, which means that the 'write-to' property in the target will be the same as the 'from' from the source. Chaining can be applied here as well. It'll create a nested object structure with the last property to be the carrier of the value.
+8. The `to` property is the key in the target object where the value shall be written to. It is **not mandatory if a `from` property exists** - in that case if it's not there, the default applies, which means that the 'write-to' property in the target will be the same as the 'from' from the source. Chaining can be applied here as well. It'll create a nested object structure with the last property to be the carrier of the value.
+
+9. The `withTemplate` property defines a template which may contain an arbitrary string with the possibility to embed references to props from the source. That comes handy if you want to construct a new property consisting of several fields from the source and maybe also some more text. In case the `withTemplate` prop is defined, **the `from` property must not exist in the same scope**, the two fields `withTemplate` and `from` are mutually exclusive. Another thing that changes if `withTemplate` is defined, is that the `to` property becomes mandatory and must be provided. This is because no implicit to field can be derived since the `from` property is not allowed in that case. Referenced properties may be nested, contain non-word characters, just like the props referenced by `from` are allowed to have.
 
 That's a rather complex yet complete example since it makes use of the whole range of the currently implemented vocabulary of the DSL.
 
