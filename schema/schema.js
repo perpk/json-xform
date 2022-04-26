@@ -8,19 +8,32 @@ const schema = {
       items: {
         type: 'object',
         properties: {
-          from: { type: 'string'},
+          from: { type: 'string' },
           to: { type: 'string' },
+          withTemplate: { type: 'string' },
           fromEach: {
             type: 'object',
             properties: {
               field: { type: 'string', required: true },
               to: { type: 'string' },
-              flatten: {type: 'boolean'},
+              flatten: { type: 'boolean' },
               fieldset: { $ref: '/Fieldset' }
             }
           }
         },
-        anyOf: [{ required: ['from'] }, { required: ['fromEach'] }]
+        anyOf: [
+          {
+            allOf: [
+              {
+                dependencies: {
+                  withTemplate: { required: ['to'] }
+                }
+              }
+            ],
+            oneOf: [{ required: ['from'] }, { required: ['withTemplate'] }]
+          },
+          { required: ['fromEach'] }
+        ]
       }
     }
   },

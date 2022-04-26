@@ -86,7 +86,7 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
     expect(result.valid).to.false;
   });
 
-  it('should find a JSON invalid if the fromEach block doesn\'t contain the mandatory field(s)', () => {
+  it("should find a JSON invalid if the fromEach block doesn't contain the mandatory field(s)", () => {
     const jsonToValidate = {
       fieldset: [
         {
@@ -106,7 +106,7 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
     expect(result.valid).to.false;
   });
 
-  it ('should find a JSON invalid if the flatten mapping property is of the wrong type', () => {
+  it('should find a JSON invalid if the flatten mapping property is of the wrong type', () => {
     const jsonToValidate = {
       fieldset: [
         {
@@ -118,6 +118,98 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
               {
                 from: 'this field',
                 to: 'that field'
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
+  });
+
+  it('should find a JSON valid if the fieldset lacks a from keyword but defines a withTemplate one', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          withTemplate: 'the template',
+          to: 'targetField'
+        }
+      ]
+    };
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.true;
+  });
+
+  it('should find a JSON invalid if both from and withTemplate fields are present', () => {
+    const jsonToValidate = {
+      fieldset: [{ withTemplate: 'template', from: 'field', to: 'target' }]
+    };
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
+  });
+
+  it('should find a JSON valid if fromEach > fieldset lacks from but defines a withTemplate prop', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'from',
+            fieldset: [
+              {
+                withTemplate: 'template',
+                to: 'target'
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.true;
+  });
+
+  it('should find a JSON invalid if fromEach > fieldset defines both from and withTemplate', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'from',
+            fieldset: [
+              {
+                from: 'from',
+                withTemplate: 'template',
+                to: 'target'
+              }
+            ]
+          }
+        }
+      ]
+    };
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
+  });
+
+  it("should find a JSON invalid if there's no 'to' prop when there's a withTemplate available", () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          withTemplate: 'template'
+        }
+      ]
+    };
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
+  });
+
+  it("should find a JSON invalid if there's no 'to' prop in fieldset > fromEach when there's a withTemplate available", () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          fromEach: {
+            fieldset: [
+              {
+                withTemplate: 'template'
               }
             ]
           }

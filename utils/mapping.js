@@ -30,7 +30,7 @@ const flattenEverything = (everything) => {
   for (const [key, val] of Object.entries(everything)) {
     if (val.constructor === Array && val.length === 1) {
       let explodedArray = Object.assign({}, ...val);
-      copyEverything = {...copyEverything, ...explodedArray};
+      copyEverything = { ...copyEverything, ...explodedArray };
       delete copyEverything[key];
     } else if (val.constructor === Array && val.length > 1) {
       const allKeys = Object.keys(...val);
@@ -62,7 +62,9 @@ const addBlockToTarget = (block, target, flatten) => {
       newTarget.push(flattened);
     }
   } else {
-    block.constructor === Array ? newTarget.push(...block) : newTarget.push(block);
+    block.constructor === Array
+      ? newTarget.push(...block)
+      : newTarget.push(block);
   }
   return newTarget;
 };
@@ -119,15 +121,26 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
     }
 
     if (item.from) {
-      const from = item.from;
-      const to = item.to || item.from;
+      if (item.from.constructor !== Array) {
+        const from = item.from;
+        const to = item.to || item.from;
 
-      const fromValue = querySingleProp(source, from);
-      if(!fromValue) {
-        return;
+        const fromValue = querySingleProp(source, from);
+        if (!fromValue) {
+          return;
+        }
+        let currentTarget = addPropToTarget(target, to, fromValue);
+        target = { ...target, ...currentTarget };
+      } else {
+        let pairs = {};
+        item.from.forEach((from) => {
+          pairs[from] = querySingleProp(source, from);
+        });
+        const to = item.to || item.from[0];
+        if (item.withTemplate) {
+          
+        }
       }
-      let currentTarget = addPropToTarget(target, to, fromValue);
-      target = { ...target, ...currentTarget };
     }
   });
   return target;
