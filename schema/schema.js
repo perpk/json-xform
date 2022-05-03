@@ -11,6 +11,7 @@ const schema = {
           from: { type: 'string' },
           to: { type: 'string' },
           withTemplate: { type: 'string' },
+          toArray: { type: 'boolean' },
           fromEach: {
             type: 'object',
             properties: {

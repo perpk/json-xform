@@ -129,7 +129,8 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
       if (!fromValue) {
         return;
       }
-      let currentTarget = addPropToTarget(target, to, fromValue);
+      
+      let currentTarget = addPropToTarget(target, to, fromValue, item.toArray);
       target = { ...target, ...currentTarget };
     }
 
