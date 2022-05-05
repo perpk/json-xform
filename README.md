@@ -67,7 +67,8 @@ And for some reason (only you can know) you'd like to have something like this i
       flat: [
         {
           fieldOne: 1,
-          fieldTwo: 2,
+          fieldTwo: [2],
+          newProp: '1 is not 2',
           fieldThree: 3,
           fieldFour: 4,
           that: {
@@ -93,6 +94,7 @@ const mapping = {
               },
               {
                 from: 'fieldTwo'
+                toArray: true
               },
               {
                 to: 'newProp',
@@ -148,7 +150,9 @@ Woah! easy there, pilgrim! Let's break it down actually and take it from top to 
 
 8. The `to` property is the key in the target object where the value shall be written to. It is **not mandatory if a `from` property exists** - in that case if it's not there, the default applies, which means that the 'write-to' property in the target will be the same as the 'from' from the source. Chaining can be applied here as well. It'll create a nested object structure with the last property to be the carrier of the value.
 
-9. The `withTemplate` property defines a template which may contain an arbitrary string with the possibility to embed references to props from the source. That comes handy if you want to construct a new property consisting of several fields from the source and maybe also some more text. In case the `withTemplate` prop is defined, **the `from` property must not exist in the same scope**, the two fields `withTemplate` and `from` are mutually exclusive. Another thing that changes if `withTemplate` is defined, is that the `to` property becomes mandatory and must be provided. This is because no implicit to field can be derived since the `from` property is not allowed in that case. Referenced properties may be nested, contain non-word characters, just like the props referenced by `from` are allowed to have.
+9. The `toArray` property defines whether the referenced value from the source shall be placed into an array in the target object. This might come handy when you want to perform further processing on the transformed json and need to have arrays for the particular properties.
+
+10. The `withTemplate` property defines a template which may contain an arbitrary string with the possibility to embed references to props from the source. That comes handy if you want to construct a new property consisting of several fields from the source and maybe also some more text. In case the `withTemplate` prop is defined, **the `from` property must not exist in the same scope**, the two fields `withTemplate` and `from` are mutually exclusive. Another thing that changes if `withTemplate` is defined, is that the `to` property becomes mandatory and must be provided. This is because no implicit to field can be derived since the `from` property is not allowed in that case. Referenced properties may be nested, contain non-word characters, just like the props referenced by `from` are allowed to have.
 
 That's a rather complex yet complete example since it makes use of the whole range of the currently implemented vocabulary of the DSL.
 

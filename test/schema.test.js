@@ -219,4 +219,19 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
     const result = validateWithSchema(jsonToValidate);
     expect(result.valid).to.false;
   });
+
+  it('should find a JSON valid if the correct types are given in the withType prop', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'field',
+          to: 'another',
+          toArray: true
+        }
+      ]
+    };
+
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.true;
+  });
 });
