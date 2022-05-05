@@ -59,6 +59,25 @@ describe('Successful validations of correct JSON mappings :)', () => {
     const result = validateWithSchema(complexJsonToValidate);
     expect(result.valid).to.true;
   });
+
+  it('should validate a mapping with the "via" formatting property successfully', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'field',
+          to: 'another',
+          via: {
+            type: 'date',
+            format: 'dd/mm/yyyy',
+            sourceFormat: 'yyyy-mm-dd'
+          }
+        }
+      ]
+    };
+
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.true;
+  });
 });
 
 describe('Unsuccessful validations of correct JSON mappings :(', () => {
@@ -233,5 +252,57 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
 
     const result = validateWithSchema(jsonToValidate);
     expect(result.valid).to.true;
+  });
+
+  it('should find a JSON invalid if there are uknown types in the via object', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'field',
+          to: 'another',
+          via: {
+            type: 'lala',
+            format: '##.###'
+          }
+        }
+      ]
+    };
+
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
+  });
+
+  it ('should find a JSON invalid if the type missing in the via object', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'field',
+          to: 'another',
+          via: {
+            format: '##.###'
+          }
+        }
+      ]
+    };
+
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
+  });
+
+  it ('should find a JSON invalid if the format is missing in the via object', () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'field',
+          to: 'another',
+          via: {
+            type: 'lala',
+          }
+        }
+      ]
+    };
+
+    const result = validateWithSchema(jsonToValidate);
+    expect(result.valid).to.false;
   });
 });
