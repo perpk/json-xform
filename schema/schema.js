@@ -1,6 +1,15 @@
 const schema = {
   type: 'object',
   properties: {
+    via: {
+      id: '/Via',
+      type: 'object',
+      properties: {
+        type: { type: 'string', required: true, enum: ['date'] },
+        sourceFormat: { type: 'string', required: true },
+        format: { type: 'string', required: true }
+      }
+    },
     fieldset: {
       id: '/Fieldset',
       type: 'array',
@@ -12,6 +21,7 @@ const schema = {
           to: { type: 'string' },
           withTemplate: { type: 'string' },
           toArray: { type: 'boolean' },
+          via: { $ref: '/Via' },
           fromEach: {
             type: 'object',
             properties: {

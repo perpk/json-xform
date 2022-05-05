@@ -2,7 +2,11 @@ const { readJSON } = require('./ioUtils');
 const { addPropToTarget } = require('./constructTarget');
 const { querySingleProp, queryAll } = require('./queryJson');
 const { validateWithSchema, validationUtil } = require('../schema/validator');
-const { pickTemplateVarsFromString, wrapInVarBraces } = require('./stringUtils');
+const {
+  pickTemplateVarsFromString,
+  wrapInVarBraces
+} = require('./stringUtils');
+const { formatPropValueIfNecessary } = require('./formattingUtils');
 
 const commands = {
   FIELDSET: 'fieldset',
@@ -129,8 +133,14 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
       if (!fromValue) {
         return;
       }
-      
-      let currentTarget = addPropToTarget(target, to, fromValue, item.toArray);
+
+      let currentTarget = addPropToTarget(
+        target,
+        to,
+        fromValue,
+        item.toArray,
+        item.via
+      );
       target = { ...target, ...currentTarget };
     }
 
@@ -144,10 +154,13 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
         });
         let resolvedTemplate = item.withTemplate;
         for (const [name, value] of Object.entries(pairs)) {
-          resolvedTemplate = resolvedTemplate.replace(wrapInVarBraces(name), value);
+          resolvedTemplate = resolvedTemplate.replace(
+            wrapInVarBraces(name),
+            formatPropValueIfNecessary(value, item.via)
+          );
         }
         let currentTarget = addPropToTarget(target, to, resolvedTemplate);
-        target = {...target, ...currentTarget};
+        target = { ...target, ...currentTarget };
       } else {
         let currentTarget = addPropToTarget(target, to, item.withTemplate);
         target = { ...target, ...currentTarget };
