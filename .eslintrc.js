@@ -19,7 +19,7 @@ module.exports = {
   overrides: [{
     files: ['*.test.js'],
     rules: {
-      'no-template-curly-in-string': 'off',
+    //   'no-template-curly-in-string': 'off',
       'no-unused-expressions': 'off',
       'n/no-path-concat': 'off'
     }
