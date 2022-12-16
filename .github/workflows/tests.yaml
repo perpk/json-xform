@@ -61,6 +61,6 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: nyc-output
-          path: ${{github.workspace}}/.nyc-output
+          path: ${{github.workspace}}/.nyc_output
       - name: Coverage
         run: npm run coverage:report
