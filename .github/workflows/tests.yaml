@@ -30,10 +30,6 @@ jobs:
           name: 'Mocha Tests'
           reporter: 'mocha-json'
           path: './mocha-report.json'
-      - name: Coverage Report
-        uses: sidx1024/report-nyc-coverage-github-action@v1.2.6
-        with:
-          coverage_file: 'coverage/coverage-summary.json'
   eslint:
     runs-on: ubuntu-latest
     name: Run ESlint
@@ -57,6 +53,9 @@ jobs:
     name: Coverage assessment
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
       - name: Install Dependencies
         run: npm install
       - uses: actions/download-artifact@v3
@@ -65,6 +64,3 @@ jobs:
           path: ./.nyc-output
       - name: Coverage
         run: npm run coverage:report
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 14
