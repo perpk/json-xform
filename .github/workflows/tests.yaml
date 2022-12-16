@@ -23,7 +23,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: nyc-output
-          path: ${{github.workspace}}/./nyc_output/**/*
+          path: ${{github.workspace}}/.nyc_output/**/*
       - name: Test Report
         uses: dorny/test-reporter@v1
         with:
