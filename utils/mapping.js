@@ -127,9 +127,13 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
 
     if (item.from) {
       const from = item.from;
-      const to = item.to || item.from;
+      let to = item.to || item.from;
 
-      const fromValue = querySingleProp(source, from);
+      let fromValue = querySingleProp(source, from);
+      if (item.valueToKey) {
+        to = fromValue;
+        fromValue = querySingleProp(source, item.withValueFrom);
+      }
       if (!fromValue) {
         return;
       }
@@ -145,7 +149,7 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
     }
 
     if (item.withTemplate) {
-      const to = item.to;
+      const to = item.to || item.withValueFrom;
       const templateVars = pickTemplateVarsFromString(item.withTemplate);
       if (templateVars && templateVars.length > 0) {
         let pairs = {};

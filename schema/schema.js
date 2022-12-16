@@ -19,6 +19,8 @@ const schema = {
         properties: {
           from: { type: 'string' },
           to: { type: 'string' },
+          valueToKey: {type: 'boolean'},
+          withValueFrom: {type: 'string'},
           withTemplate: { type: 'string' },
           toArray: { type: 'boolean' },
           via: { $ref: '/Via' },
@@ -37,7 +39,7 @@ const schema = {
             allOf: [
               {
                 dependencies: {
-                  withTemplate: { required: ['to'] }
+                  withTemplate: { oneOf: [{required: ['to']}, {required: ['withValueFrom']}] }
                 }
               }
             ],
