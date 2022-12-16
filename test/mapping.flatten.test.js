@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = require('chai')
+const { describe, it } = require('mocha')
 
-const { mapToNewObject } = require('../utils/mapping');
+const { mapToNewObject } = require('../utils/mapping')
 
 describe('FromEach mapping to flat object', () => {
   it("should flatten the next fromEach's fieldset if marked so", () => {
@@ -36,7 +36,7 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       highLevel: [
         {
@@ -50,13 +50,13 @@ describe('FromEach mapping to flat object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       flat: [{ fieldOne: 1, fieldTwo: 2, fieldThree: 3, fieldFour: 4 }]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it("should flatten only the next fromEach's fieldset and not more than that", () => {
     const xFormTemplate = {
@@ -101,7 +101,7 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       highLevel: [
         {
@@ -120,7 +120,7 @@ describe('FromEach mapping to flat object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       flat: [
         {
@@ -131,10 +131,10 @@ describe('FromEach mapping to flat object', () => {
           basement: [{ that: 'value' }]
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
   it('should flatten all fromEach blocks if marked so', () => {
     const xFormTemplate = {
       fieldset: [
@@ -179,7 +179,7 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       highLevel: [
         {
@@ -202,7 +202,7 @@ describe('FromEach mapping to flat object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       flat: [
         {
@@ -215,10 +215,10 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should flatten a nested object with repetition groups and keep all items of that group', () => {
     const xFormTemplate = {
@@ -251,7 +251,7 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       delfi: [
         {
@@ -273,7 +273,7 @@ describe('FromEach mapping to flat object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       delfi: [
         {
@@ -291,10 +291,10 @@ describe('FromEach mapping to flat object', () => {
           lazurite: 'terizula'
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should include data from all data of nested repetition groups when flattened', () => {
     const xFormTemplate = {
@@ -318,7 +318,7 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       root: [
         {
@@ -352,13 +352,13 @@ describe('FromEach mapping to flat object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       root: [{ fieldOne: [1, 2, 3, 4, 5, 6] }]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
   it('should correctly flatten a nested fieldset without overwriting contents of the object it is flattened to', () => {
     const xFormTemplate = {
       fieldset: [
@@ -398,7 +398,7 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       root: [
         {
@@ -423,7 +423,7 @@ describe('FromEach mapping to flat object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       root: [
         {
@@ -433,10 +433,10 @@ describe('FromEach mapping to flat object', () => {
           branchFieldOne: [10, 11, 12]
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
   it('should correctly flatten a nested fieldset without overwriting contents of the object it is flattened to - case of single element collection in deepest nesting level', () => {
     const xFormTemplate = {
       fieldset: [
@@ -476,7 +476,7 @@ describe('FromEach mapping to flat object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       root: [
         {
@@ -501,7 +501,7 @@ describe('FromEach mapping to flat object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       root: [
         {
@@ -511,8 +511,8 @@ describe('FromEach mapping to flat object', () => {
           branchFieldTwo: [22]
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
-});
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
+})

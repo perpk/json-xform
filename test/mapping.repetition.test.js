@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = require('chai')
+const { describe, it } = require('mocha')
 
-const { mapToNewObject } = require('../utils/mapping');
+const { mapToNewObject } = require('../utils/mapping')
 
 describe('Testing repetition groups', () => {
   it('should successfully take over properties mapped in a fromEach repetition group to a new object', () => {
@@ -21,7 +21,7 @@ describe('Testing repetition groups', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       repetitionGroup: [
         {
@@ -33,7 +33,7 @@ describe('Testing repetition groups', () => {
           singlePropertyTwo: 'another value to copy!'
         }
       ]
-    };
+    }
     const target = {
       repetitionGroup: [
         {
@@ -43,10 +43,10 @@ describe('Testing repetition groups', () => {
           singlePropertyTwo: 'another value to copy!'
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should successfully take over properties mapped in a fromEach repetition group to a new object with another name', () => {
     const xFormTemplate = {
@@ -64,7 +64,7 @@ describe('Testing repetition groups', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       repetitionGroup: [
         {
@@ -72,15 +72,15 @@ describe('Testing repetition groups', () => {
           singleProperty: 'value to copy!'
         }
       ]
-    };
+    }
     const target = {
       newGroup: [
         {
           newSingleProperty: 'value to copy!'
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
-});
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
+})

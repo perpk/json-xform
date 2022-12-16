@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = require('chai')
+const { describe, it } = require('mocha')
 
-const { mapToNewObject } = require('../utils/mapping');
+const { mapToNewObject } = require('../utils/mapping')
 
 describe('Mapping with chaining in the target field', () => {
   it('should map a primitive typed value into a new object in the target field', () => {
@@ -12,18 +12,18 @@ describe('Mapping with chaining in the target field', () => {
           to: 'object.random'
         }
       ]
-    };
+    }
     const source = {
       random: 'value'
-    };
+    }
     const target = {
       object: {
         random: 'value'
       }
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should map an array typed value into a new object in the target field', () => {
     const xFormTemplate = {
@@ -33,18 +33,18 @@ describe('Mapping with chaining in the target field', () => {
           to: 'object.array'
         }
       ]
-    };
+    }
     const source = {
       array: [1, 2, 3, 4, 5]
-    };
+    }
     const target = {
       object: {
         array: [1, 2, 3, 4, 5]
       }
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should map an object typed value into a new object in the target field', () => {
     const xFormTemplate = {
@@ -54,14 +54,14 @@ describe('Mapping with chaining in the target field', () => {
           to: 'objectWrapper.newObject'
         }
       ]
-    };
+    }
     const source = {
       object: {
         propOne: 1,
         propTwo: 'two',
         propThree: [1, 2, 3, 'banana']
       }
-    };
+    }
     const target = {
       objectWrapper: {
         newObject: {
@@ -70,10 +70,10 @@ describe('Mapping with chaining in the target field', () => {
           propThree: [1, 2, 3, 'banana']
         }
       }
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should map nested object properties to new properties', () => {
     const xFormTemplate = {
@@ -91,14 +91,14 @@ describe('Mapping with chaining in the target field', () => {
           to: 'objectWrapper.newObject.newPropThree'
         }
       ]
-    };
+    }
     const source = {
       object: {
         propOne: 1,
         propTwo: 'two',
         propThree: [1, 2, 3, 'banana']
       }
-    };
+    }
     const target = {
       objectWrapper: {
         newObject: {
@@ -107,10 +107,10 @@ describe('Mapping with chaining in the target field', () => {
           newPropThree: [1, 2, 3, 'banana']
         }
       }
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it("should inherit nesting from source if no 'to' field is specified", () => {
     const xFormTemplate = {
@@ -119,7 +119,7 @@ describe('Mapping with chaining in the target field', () => {
         { from: 'objectWrapper.object.secondProp' },
         { from: 'objectWrapper.object.thirdProp' }
       ]
-    };
+    }
     const source = {
       objectWrapper: {
         object: {
@@ -128,7 +128,7 @@ describe('Mapping with chaining in the target field', () => {
           thirdProp: '3rd value'
         }
       }
-    };
+    }
     const target = {
       objectWrapper: {
         object: {
@@ -137,8 +137,8 @@ describe('Mapping with chaining in the target field', () => {
           thirdProp: '3rd value'
         }
       }
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
-});
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
+})

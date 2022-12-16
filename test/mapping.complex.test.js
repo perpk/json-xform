@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = require('chai')
+const { describe, it } = require('mocha')
 
-const { mapToNewObject } = require('../utils/mapping');
+const { mapToNewObject } = require('../utils/mapping')
 
 describe('Testing complex object', () => {
   it('should correctly map an object with a fieldset and a fromEach to a target object', () => {
@@ -26,7 +26,7 @@ describe('Testing complex object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       myProp: 'myValue',
       myField: [
@@ -35,7 +35,7 @@ describe('Testing complex object', () => {
           myOtherNestedProp: 'myOtherNestedPropValue'
         }
       ]
-    };
+    }
     const target = {
       yourProp: 'myValue',
       yourField: [
@@ -44,10 +44,10 @@ describe('Testing complex object', () => {
           yourOtherNestedProp: 'myOtherNestedPropValue'
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should correctly map an object with a fieldset and a fromEach with a nested fromEach to a target object', () => {
     const xFormTemplate = {
@@ -73,7 +73,7 @@ describe('Testing complex object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       myProp: 'myValue',
       firstLevelGroup: [
@@ -90,7 +90,7 @@ describe('Testing complex object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       yourProp: 'myValue',
       firstLevelGroup: [
@@ -105,10 +105,10 @@ describe('Testing complex object', () => {
           ]
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should correctly map nested fromEach blocks with fieldsets within', () => {
     const xFormTemplate = {
@@ -134,7 +134,7 @@ describe('Testing complex object', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       levelOne: [
         {
@@ -150,7 +150,7 @@ describe('Testing complex object', () => {
           ]
         }
       ]
-    };
+    }
     const target = {
       levelOne: [
         {
@@ -166,8 +166,8 @@ describe('Testing complex object', () => {
           ]
         }
       ]
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
-});
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
+})

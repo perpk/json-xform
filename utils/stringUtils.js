@@ -1,18 +1,18 @@
 const pickTemplateVarsFromString = (theString) => {
-  const matches = theString.match(/\${[A-Za-z$._0-9]+}/g);
+  const matches = theString.match(/\${[A-Za-z$._0-9]+}/g)
 
   if (matches) {
-    return matches.map((oc) => stripOffTemplateVarWrapper(oc));
+    return matches.map((oc) => stripOffTemplateVarWrapper(oc))
   }
-  return [];
-};
+  return []
+}
 
 const stripOffTemplateVarWrapper = (wrapped) => {
-  return wrapped.substr(1).replace('{', '').replace('}', '');
-};
+  return wrapped.substr(1).replace('{', '').replace('}', '')
+}
 
 const wrapInVarBraces = (unwrapped) => {
-  return '${' + unwrapped + '}';
-};
+  return '${' + unwrapped + '}'
+}
 
-module.exports = { pickTemplateVarsFromString, wrapInVarBraces };
+module.exports = { pickTemplateVarsFromString, wrapInVarBraces }

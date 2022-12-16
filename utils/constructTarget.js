@@ -1,4 +1,4 @@
-const { formatPropValueIfNecessary } = require('./formattingUtils');
+const { formatPropValueIfNecessary } = require('./formattingUtils')
 
 const addPropToTarget = (
   target,
@@ -7,16 +7,16 @@ const addPropToTarget = (
   toArray = false,
   via = null
 ) => {
-  const newTarget = { ...target };
+  const newTarget = { ...target }
   if (property.indexOf('.') >= 0) {
-    const parts = property.split('.');
-    addPropRecursive(parts, newTarget, propertyValue, toArray, via);
+    const parts = property.split('.')
+    addPropRecursive(parts, newTarget, propertyValue, toArray, via)
   } else if (!newTarget[property]) {
-    const formattedValue = formatPropValueIfNecessary(propertyValue, via);
-    newTarget[property] = toArray ? [formattedValue] : formattedValue;
+    const formattedValue = formatPropValueIfNecessary(propertyValue, via)
+    newTarget[property] = toArray ? [formattedValue] : formattedValue
   }
-  return newTarget;
-};
+  return newTarget
+}
 
 const addPropRecursive = (
   elems,
@@ -25,14 +25,14 @@ const addPropRecursive = (
   toArray = false,
   via = null
 ) => {
-  let current = elems.shift();
+  const current = elems.shift()
   if (!current) {
-    const formattedValue = formatPropValueIfNecessary(value, via);
-    target = toArray ? [formattedValue] : formattedValue;
-    return target;
+    const formattedValue = formatPropValueIfNecessary(value, via)
+    target = toArray ? [formattedValue] : formattedValue
+    return target
   }
   if (!target[current]) {
-    target[current] = {};
+    target[current] = {}
   }
   target[current] = addPropRecursive(
     elems,
@@ -40,8 +40,8 @@ const addPropRecursive = (
     value,
     toArray,
     via
-  );
-  return target;
-};
+  )
+  return target
+}
 
-module.exports = { addPropToTarget };
+module.exports = { addPropToTarget }

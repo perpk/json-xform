@@ -1,24 +1,24 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = require('chai')
+const { describe, it } = require('mocha')
 
-const { validateWithSchema } = require('../schema/validator');
+const { validateWithSchema } = require('../schema/validator')
 
 describe('Successful validations of correct JSON mappings :)', () => {
   it('should validate a simple mapping with only mandatory fields successfully', () => {
     const jsonToValidate = {
       fieldset: [{ from: 'source' }]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.true;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
 
   it('should validate a simple mapping with an additional optional field successfully', () => {
     const jsonToValidate = {
       fieldset: [{ from: 'source', to: 'target' }]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.true;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
 
   it('should validate a mapping with a fromEach group successfully if the mandatory field(s) are in place', () => {
     const jsonToValidate = {
@@ -29,10 +29,10 @@ describe('Successful validations of correct JSON mappings :)', () => {
           }
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.true;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
 
   it('should validate a complex mapping successfully', () => {
     const complexJsonToValidate = {
@@ -55,10 +55,10 @@ describe('Successful validations of correct JSON mappings :)', () => {
           to: 'anotherTarget'
         }
       ]
-    };
-    const result = validateWithSchema(complexJsonToValidate);
-    expect(result.valid).to.true;
-  });
+    }
+    const result = validateWithSchema(complexJsonToValidate)
+    expect(result.valid).to.true
+  })
 
   it('should validate a mapping with the "via" formatting property successfully', () => {
     const jsonToValidate = {
@@ -73,37 +73,37 @@ describe('Successful validations of correct JSON mappings :)', () => {
           }
         }
       ]
-    };
+    }
 
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.true;
-  });
-});
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
+})
 
 describe('Unsuccessful validations of correct JSON mappings :(', () => {
   it('should find a JSON invalid if it is empty', () => {
-    const jsonToValidate = {};
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    const jsonToValidate = {}
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it('should find a JSON invalid if it contains a mapping with an unknown field', () => {
-    const jsonToValidate = { unknownField: 'unknown' };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    const jsonToValidate = { unknownField: 'unknown' }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it('should find a JSON invalid if it contains an empty fieldset', () => {
-    const jsonToValidate = { fieldset: [] };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    const jsonToValidate = { fieldset: [] }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it('should find a JSON invalid if fieldset contain only one non-mandatory field', () => {
-    const jsonToValidate = { fieldset: [{ to: 'targetField' }] };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    const jsonToValidate = { fieldset: [{ to: 'targetField' }] }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it("should find a JSON invalid if the fromEach block doesn't contain the mandatory field(s)", () => {
     const jsonToValidate = {
@@ -120,10 +120,10 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           }
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it('should find a JSON invalid if the flatten mapping property is of the wrong type', () => {
     const jsonToValidate = {
@@ -142,10 +142,10 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           }
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it('should find a JSON valid if the fieldset lacks a from keyword but defines a withTemplate one', () => {
     const jsonToValidate = {
@@ -155,18 +155,18 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           to: 'targetField'
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.true;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
 
   it('should find a JSON invalid if both from and withTemplate fields are present', () => {
     const jsonToValidate = {
       fieldset: [{ withTemplate: 'template', from: 'field', to: 'target' }]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it('should find a JSON valid if fromEach > fieldset lacks from but defines a withTemplate prop', () => {
     const jsonToValidate = {
@@ -183,10 +183,10 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           }
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.true;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
 
   it('should find a JSON invalid if fromEach > fieldset defines both from and withTemplate', () => {
     const jsonToValidate = {
@@ -204,10 +204,10 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           }
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it("should find a JSON invalid if there's no 'to' prop when there's a withTemplate available", () => {
     const jsonToValidate = {
@@ -216,10 +216,10 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           withTemplate: 'template'
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it("should find a JSON invalid if there's no 'to' prop in fieldset > fromEach when there's a withTemplate available", () => {
     const jsonToValidate = {
@@ -234,10 +234,10 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           }
         }
       ]
-    };
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
   it('should find a JSON valid if the correct types are given in the withType prop', () => {
     const jsonToValidate = {
@@ -248,11 +248,11 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           toArray: true
         }
       ]
-    };
+    }
 
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.true;
-  });
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
 
   it('should find a JSON invalid if there are uknown types in the via object', () => {
     const jsonToValidate = {
@@ -266,13 +266,13 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           }
         }
       ]
-    };
+    }
 
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
-  it ('should find a JSON invalid if the type missing in the via object', () => {
+  it('should find a JSON invalid if the type missing in the via object', () => {
     const jsonToValidate = {
       fieldset: [
         {
@@ -283,26 +283,26 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
           }
         }
       ]
-    };
+    }
 
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
 
-  it ('should find a JSON invalid if the format is missing in the via object', () => {
+  it('should find a JSON invalid if the format is missing in the via object', () => {
     const jsonToValidate = {
       fieldset: [
         {
           from: 'field',
           to: 'another',
           via: {
-            type: 'lala',
+            type: 'lala'
           }
         }
       ]
-    };
+    }
 
-    const result = validateWithSchema(jsonToValidate);
-    expect(result.valid).to.false;
-  });
-});
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
+})
