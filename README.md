@@ -1,3 +1,13 @@
+![tests.yaml](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+
+![codeql-analysis.yaml](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+
+[![Code Coverage](https://img.shields.io/codecov/c/github/perpk/json-xform)](https://codecov.io/github/perpk/json-xform)
+
+![Depfu](https://img.shields.io/depfu/perpk/json-xform)
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/perpk/json-xform)
+
 #### [json-xform](https://www.npmjs.com/package/@perpk/json-xform)
 # JSON transform 🤖
 
