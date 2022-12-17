@@ -1,10 +1,6 @@
-![tests.yaml](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+[![https://nodei.co/npm/YOUR-MODULE-NAME.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/@perpk/json-xform.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/@perpk/json-xform)
 
-![codeql-analysis.yaml](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
-
-[![Code Coverage](https://img.shields.io/codecov/c/github/perpk/json-xform)](https://codecov.io/github/perpk/json-xform)
-
-![Depfu](https://img.shields.io/depfu/perpk/json-xform)
+![Tests](https://github.com/perpk/json-xform/actions/workflows/tests.yaml/badge.svg)
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/perpk/json-xform)
 
