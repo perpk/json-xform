@@ -1,0 +1,66 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Run Tests
+
+    steps:
+      - uses: actions/checkout@v2
+      - id: nvmrc
+        uses: browniebroke/read-nvmrc-action@v1
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.nvmrc.outputs.node_version }}
+      - name: Install Dependencies
+        run: npm install
+      - name: Mocha Tests
+        run: npm run test:reportJson
+      - uses: actions/upload-artifact@v3
+        with:
+          name: nyc-output
+          path: ${{github.workspace}}/.nyc_output/**/*
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: 'Mocha Tests'
+          reporter: 'mocha-json'
+          path: './mocha-report.json'
+  eslint:
+    runs-on: ubuntu-latest
+    name: Run ESlint
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+     - uses: actions/checkout@v2
+     - id: nvmrc
+       uses: browniebroke/read-nvmrc-action@v1
+     - uses: actions/setup-node@v3
+       with:
+         node-version: ${{ steps.nvmrc.outputs.node_version }}
+     - uses: reviewdog/action-eslint@v1
+       with: 
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+         reporter: github-pr-review
+  coverage:
+    needs: [build]
+    runs-on: ubuntu-latest
+    name: Coverage assessment
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Install Dependencies
+        run: npm install
+      - uses: actions/download-artifact@v3
+        with:
+          name: nyc-output
+          path: ${{github.workspace}}/.nyc_output
+      - name: Coverage
+        run: npm run coverage:report
