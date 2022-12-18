@@ -34,7 +34,7 @@ const addPropRecursive = (
     return target
   }
   if (!target[current]) {
-    target[current] = Object.create(null)
+    target[current] = {}
   }
   target[current] = addPropRecursive(
     elems,
