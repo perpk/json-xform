@@ -33,6 +33,7 @@ const addPropRecursive = (
     target = toArray ? [formattedValue] : formattedValue
     return target
   }
+  Object.freeze(current)
   if (!target[current]) {
     target[current] = {}
   }
