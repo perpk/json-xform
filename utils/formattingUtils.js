@@ -1,3 +1,5 @@
+'use-strict'
+
 const dFormat = require('date-fns/format')
 const parse = require('date-fns/parse')
 

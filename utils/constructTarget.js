@@ -1,3 +1,5 @@
+'use-strict'
+
 const { formatPropValueIfNecessary } = require('./formattingUtils')
 
 const addPropToTarget = (
@@ -32,7 +34,7 @@ const addPropRecursive = (
     return target
   }
   if (!target[current]) {
-    target[current] = {}
+    target[current] = Object.create(null)
   }
   target[current] = addPropRecursive(
     elems,
