@@ -13,7 +13,11 @@
     "test:reportJson": "nyc mocha --reporter json --reporter-option output=mocha-report.json",
     "test:report": "npx mocha --reporter mochawesome",
     "test:watch": "mocha --watch",
-    "coverage:report": "npx nyc report --reporter json-summary"
+    "coverage:report": "npx nyc report --reporter json-summary",
+    "eslint": "npx eslint utils schema test index.js",
+    "validate": "npm-run-all --parallel eslint test",
+    "prepare": "husky install",
+    "precommit": "npm run validate"
   },
   "author": "k.a.perperidis@gmail.com",
   "license": "ISC",
@@ -30,6 +34,8 @@
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-promise": "^6.1.1",
     "mocha": "^9.2.2",
+    "husky": "^8.0.2",
+    "npm-run-all": "^4.1.5",
     "mochawesome": "^7.1.3",
     "mochawesome-report-generator": "^6.2.0",
     "nyc": "^15.1.0",
