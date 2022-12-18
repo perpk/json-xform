@@ -25,6 +25,8 @@ const mapWithTemplate = (sourceFile, xformTemplateFile) => {
 }
 
 const mapToNewObject = (source, xFormTemplate) => {
+  Object.freeze(xFormTemplate.prototype)
+  Object.freeze(source.prototype)
   const result = validateWithSchema(xFormTemplate)
   if (!result.valid) {
     throw Error(validationUtil.getErrorMessage(result))
