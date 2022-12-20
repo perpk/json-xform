@@ -33,10 +33,8 @@ const addPropRecursive = (
     target = toArray ? [formattedValue] : formattedValue
     return target
   }
-  Object.freeze(target.prototype)
-  Object.freeze(current.prototype)
   if (!target[current]) {
-    target[current] = {}
+    target[current] = Object.create(null)
   }
   target[current] = addPropRecursive(
     elems,
