@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = {
   env: {
     browser: true,
@@ -12,7 +14,7 @@ module.exports = {
     SharedArrayBuffer: 'readonly'
   },
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2020
   },
   rules: {
   },

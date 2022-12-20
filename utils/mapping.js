@@ -1,3 +1,5 @@
+'use-strict'
+
 const { readJSON } = require('./ioUtils')
 const { addPropToTarget } = require('./constructTarget')
 const { querySingleProp, queryAll } = require('./queryJson')

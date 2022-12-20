@@ -1,3 +1,5 @@
+'use-strict'
+
 const pickTemplateVarsFromString = (theString) => {
   const matches = theString.match(/\${[A-Za-z$._0-9]+}/g)
 

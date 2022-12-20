@@ -1,3 +1,5 @@
+'use-strict'
+
 const jsonpath = require('jsonpath')
 
 const querySingleProp = (json, prop) => {
