@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = require('chai')
+const { describe, it } = require('mocha')
 
-const { mapToNewObject } = require('../utils/mapping');
+const { mapToNewObject } = require('../utils/mapping')
 
 describe('Schema violation errors', () => {
   it('should throw an error with a string typed message', () => {
@@ -18,12 +18,12 @@ describe('Schema violation errors', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       someProp: "doesn't really matter, since schema is invalid already :)"
-    };
+    }
     const errorMsg =
-      'instance.fieldset[0].fromEach.field is required';
-    expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg);
-  });
-});
+      'instance.fieldset[0].fromEach.field is required'
+    expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg)
+  })
+})

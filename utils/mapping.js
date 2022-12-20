@@ -1,120 +1,122 @@
-const { readJSON } = require('./ioUtils');
-const { addPropToTarget } = require('./constructTarget');
-const { querySingleProp, queryAll } = require('./queryJson');
-const { validateWithSchema, validationUtil } = require('../schema/validator');
+'use-strict'
+
+const { readJSON } = require('./ioUtils')
+const { addPropToTarget } = require('./constructTarget')
+const { querySingleProp, queryAll } = require('./queryJson')
+const { validateWithSchema, validationUtil } = require('../schema/validator')
 const {
   pickTemplateVarsFromString,
   wrapInVarBraces
-} = require('./stringUtils');
-const { formatPropValueIfNecessary } = require('./formattingUtils');
+} = require('./stringUtils')
+const { formatPropValueIfNecessary } = require('./formattingUtils')
 
 const commands = {
   FIELDSET: 'fieldset',
   FROM: 'from',
   TO: 'to',
   FROMEACH: 'fromEach'
-};
+}
 
 const mapWithTemplate = (sourceFile, xformTemplateFile) => {
-  const source = readJSON(sourceFile);
-  const xformTemplate = readJSON(xformTemplateFile);
+  const source = readJSON(sourceFile)
+  const xformTemplate = readJSON(xformTemplateFile)
 
-  return mapToNewObject(source, xformTemplate);
-};
+  return mapToNewObject(source, xformTemplate)
+}
 
 const mapToNewObject = (source, xFormTemplate) => {
-  const result = validateWithSchema(xFormTemplate);
+  const result = validateWithSchema(xFormTemplate)
   if (!result.valid) {
-    throw Error(validationUtil.getErrorMessage(result));
+    throw Error(validationUtil.getErrorMessage(result))
   }
-  return traverseTemplate(source, xFormTemplate);
-};
+  return traverseTemplate(source, xFormTemplate)
+}
 
 const flattenEverything = (everything) => {
-  let copyEverything = Object.assign({}, everything);
+  let copyEverything = Object.assign({}, everything)
   for (const [key, val] of Object.entries(everything)) {
     if (val.constructor === Array && val.length === 1) {
-      let explodedArray = Object.assign({}, ...val);
-      copyEverything = { ...copyEverything, ...explodedArray };
-      delete copyEverything[key];
+      const explodedArray = Object.assign({}, ...val)
+      copyEverything = { ...copyEverything, ...explodedArray }
+      delete copyEverything[key]
     } else if (val.constructor === Array && val.length > 1) {
-      const allKeys = Object.keys(...val);
+      const allKeys = Object.keys(...val)
       if (allKeys.length === 1) {
-        const onlyKey = allKeys[0];
-        const pureValues = new Array();
+        const onlyKey = allKeys[0]
+        const pureValues = []
         Object.values(val).forEach((value) => {
           if (value[onlyKey]) {
-            pureValues.push(value[onlyKey]);
+            pureValues.push(value[onlyKey])
           }
-        });
-        copyEverything[onlyKey] = pureValues;
+        })
+        copyEverything[onlyKey] = pureValues
       } else {
-        copyEverything = val.slice();
+        copyEverything = val.slice()
       }
-      delete copyEverything[key];
+      delete copyEverything[key]
     }
   }
-  return copyEverything;
-};
+  return copyEverything
+}
 
 const addBlockToTarget = (block, target, flatten) => {
-  let newTarget = [...target];
+  const newTarget = [...target]
   if (flatten) {
-    let flattened = flattenEverything(block);
+    const flattened = flattenEverything(block)
     if (flattened.constructor === Array) {
-      newTarget.push(...flattened);
+      newTarget.push(...flattened)
     } else {
-      newTarget.push(flattened);
+      newTarget.push(flattened)
     }
   } else {
     block.constructor === Array
       ? newTarget.push(...block)
-      : newTarget.push(block);
+      : newTarget.push(block)
   }
-  return newTarget;
-};
+  return newTarget
+}
 
 const traverseFromEach = (source, fromEachTemplate, target) => {
-  const field = fromEachTemplate.field;
-  const to = fromEachTemplate.to || field;
-  const flatten = fromEachTemplate.flatten || false;
-  const fieldSources = queryAll(source, field);
+  const field = fromEachTemplate.field
+  const to = fromEachTemplate.to || field
+  const flatten = fromEachTemplate.flatten || false
+  const fieldSources = queryAll(source, field)
   if (!Object.keys(target).find((k) => k === to)) {
-    target[to] = new Array();
+    target[to] = []
   }
   if (fromEachTemplate.fieldset) {
     target[to] = addBlockToTarget(
       traverseFieldsets(fieldSources, fromEachTemplate.fieldset, flatten),
       target[to],
       flatten
-    );
+    )
   } else if (fromEachTemplate.fromEach) {
     target[to] = addBlockToTarget(
       traverseFromEach(fieldSources, fromEachTemplate.fromEach, {}),
       target[to],
       flatten
-    );
+    )
   } else {
-    target[to] = addBlockToTarget(fieldSources, target[to], flatten);
+    target[to] = addBlockToTarget(fieldSources, target[to], flatten)
   }
 
-  return target;
-};
+  return target
+}
 
 const traverseFieldsets = (sources, parentTemplate, flatten) => {
-  let fieldsetTarget = flatten ? {} : new Array();
+  let fieldsetTarget = flatten ? {} : []
   if (sources.constructor !== Array) {
-    sources = [sources];
+    sources = [sources]
   }
   sources.forEach((item) => {
     if (!flatten) {
-      fieldsetTarget.push(traverseFieldset(item, parentTemplate, {}));
+      fieldsetTarget.push(traverseFieldset(item, parentTemplate, {}))
     } else {
-      fieldsetTarget = traverseFieldset(item, parentTemplate, fieldsetTarget);
+      fieldsetTarget = traverseFieldset(item, parentTemplate, fieldsetTarget)
     }
-  });
-  return fieldsetTarget;
-};
+  })
+  return fieldsetTarget
+}
 
 const traverseFieldset = (source, fieldsetTemplate, target) => {
   fieldsetTemplate.forEach((item) => {
@@ -122,56 +124,60 @@ const traverseFieldset = (source, fieldsetTemplate, target) => {
       target = {
         ...target,
         ...traverseFromEach(source, item[commands.FROMEACH], target)
-      };
+      }
     }
 
     if (item.from) {
-      const from = item.from;
-      const to = item.to || item.from;
+      const from = item.from
+      let to = item.to || item.from
 
-      const fromValue = querySingleProp(source, from);
+      let fromValue = querySingleProp(source, from)
+      if (item.valueToKey) {
+        to = fromValue
+        fromValue = querySingleProp(source, item.withValueFrom)
+      }
       if (!fromValue) {
-        return;
+        return
       }
 
-      let currentTarget = addPropToTarget(
+      const currentTarget = addPropToTarget(
         target,
         to,
         fromValue,
         item.toArray,
         item.via
-      );
-      target = { ...target, ...currentTarget };
+      )
+      target = { ...target, ...currentTarget }
     }
 
     if (item.withTemplate) {
-      const to = item.to;
-      const templateVars = pickTemplateVarsFromString(item.withTemplate);
+      const to = item.to || item.withValueFrom
+      const templateVars = pickTemplateVarsFromString(item.withTemplate)
       if (templateVars && templateVars.length > 0) {
-        let pairs = {};
+        const pairs = {}
         templateVars.forEach((item) => {
-          pairs[item] = querySingleProp(source, item);
-        });
-        let resolvedTemplate = item.withTemplate;
+          pairs[item] = querySingleProp(source, item)
+        })
+        let resolvedTemplate = item.withTemplate
         for (const [name, value] of Object.entries(pairs)) {
           resolvedTemplate = resolvedTemplate.replace(
             wrapInVarBraces(name),
             formatPropValueIfNecessary(value, item.via)
-          );
+          )
         }
-        let currentTarget = addPropToTarget(target, to, resolvedTemplate);
-        target = { ...target, ...currentTarget };
+        const currentTarget = addPropToTarget(target, to, resolvedTemplate)
+        target = { ...target, ...currentTarget }
       } else {
-        let currentTarget = addPropToTarget(target, to, item.withTemplate);
-        target = { ...target, ...currentTarget };
+        const currentTarget = addPropToTarget(target, to, item.withTemplate)
+        target = { ...target, ...currentTarget }
       }
     }
-  });
-  return target;
-};
+  })
+  return target
+}
 
 const traverseTemplate = (source, xFormTemplate) => {
-  return traverseFieldset(source, xFormTemplate[commands.FIELDSET], {});
-};
+  return traverseFieldset(source, xFormTemplate[commands.FIELDSET], {})
+}
 
-module.exports = { mapToNewObject, mapWithTemplate, traverseTemplate };
+module.exports = { mapToNewObject, mapWithTemplate, traverseTemplate }
