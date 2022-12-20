@@ -20,7 +20,7 @@
   "dependencies": {
     "date-fns": "^2.29.3",
     "jsonpath": "^1.1.1",
-    "jsonschema": "^1.4.0"
+    "jsonschema": "^1.4.1"
   },
   "devDependencies": {
     "chai": "^4.3.4",
