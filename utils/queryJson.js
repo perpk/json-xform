@@ -2,16 +2,25 @@
 
 const jsonpath = require('jsonpath')
 
+/**
+ * This is necessary since {@link jsonpath} seems to only recognize objects that carry __proto__
+ * @param {@type Object} from The prototype-free object
+ * @returns {@type Object} A cloned version of the {@param from} parameter with __proto__
+ */
+const makeObject = (from) => {
+  return Object.assign({}, from)
+}
+
 const querySingleProp = (json, prop) => {
-  return jsonpath.query(json, constructQueryForProp(prop))[0]
+  return jsonpath.query(makeObject(json), constructQueryForProp(prop))[0]
 }
 
 const queryAll = (json, prop) => {
-  return jsonpath.query(json, '$..' + prop)[0]
+  return jsonpath.query(makeObject(json), '$..' + prop)[0]
 }
 
 const queryArrayElements = (json, array, prop) => {
-  return jsonpath.query(json, '$.' + array + '..' + prop)
+  return jsonpath.query(makeObject(json), '$.' + array + '..' + prop)
 }
 
 const evaluateProp = (prop) => {

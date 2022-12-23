@@ -25,11 +25,15 @@ const mapWithTemplate = (sourceFile, xformTemplateFile) => {
 }
 
 const mapToNewObject = (source, xFormTemplate) => {
-  const result = validateWithSchema(xFormTemplate)
+  const _source = Object.create(null)
+  const _xFormTemplate = Object.create(null)
+  Object.assign(_source, source)
+  Object.assign(_xFormTemplate, xFormTemplate)
+  const result = validateWithSchema(_xFormTemplate)
   if (!result.valid) {
     throw Error(validationUtil.getErrorMessage(result))
   }
-  return traverseTemplate(source, xFormTemplate)
+  return traverseTemplate(_source, _xFormTemplate)
 }
 
 const flattenEverything = (everything) => {
