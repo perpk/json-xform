@@ -19,8 +19,8 @@ const schema = {
         properties: {
           from: { type: 'string' },
           to: { type: 'string' },
-          valueToKey: {type: 'boolean'},
-          withValueFrom: {type: 'string'},
+          valueToKey: { type: 'boolean' },
+          withValueFrom: { type: 'string' },
           withTemplate: { type: 'string' },
           toArray: { type: 'boolean' },
           via: { $ref: '/Via' },
@@ -39,7 +39,7 @@ const schema = {
             allOf: [
               {
                 dependencies: {
-                  withTemplate: { oneOf: [{required: ['to']}, {required: ['withValueFrom']}] }
+                  withTemplate: { oneOf: [{ required: ['to'] }, { required: ['withValueFrom'] }] }
                 }
               }
             ],
@@ -51,6 +51,6 @@ const schema = {
     }
   },
   required: ['fieldset']
-};
+}
 
-module.exports = { schema };
+module.exports = { schema }

@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = require('chai')
+const { describe, it } = require('mocha')
 
-const { mapToNewObject } = require('../utils/mapping');
+const { mapToNewObject } = require('../utils/mapping')
 
 describe('Reformat a date from the source', () => {
   it('should reformat with the given format in the mapping', () => {
@@ -17,16 +17,16 @@ describe('Reformat a date from the source', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       dateField: '1981-10-03'
-    };
+    }
     const target = {
       anotherDatefield: '10/03/1981'
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should reformat properly also when time is provided', () => {
     const xFormTemplate = {
@@ -41,16 +41,16 @@ describe('Reformat a date from the source', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       dateField: '1981-10-03 17:25:00'
-    };
+    }
     const target = {
       anotherDatefield: '10/03/1981 5:25 PM'
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should format dates referenced in a template', () => {
     const xFormTemplate = {
@@ -65,17 +65,17 @@ describe('Reformat a date from the source', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       theDate: '1981-10-03',
       theOtherDate: '1982-12-12'
-    };
+    }
     const target = {
       template: 'It was on the 10/03/1981 not 12/12/1982'
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should format dates from chained prop references', () => {
     const xFormTemplate = {
@@ -90,18 +90,18 @@ describe('Reformat a date from the source', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       property: {
         dateField: '1981-10-03 17:25:00'
       }
-    };
+    }
     const target = {
       anotherDatefield: '10/03/1981 5:25 PM'
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should format dates into nested properties in target object', () => {
     const xFormTemplate = {
@@ -116,18 +116,18 @@ describe('Reformat a date from the source', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       dateField: '1981-10-03'
-    };
+    }
     const target = {
       property: {
         anotherDatefield: '10/03/1981'
       }
-    };
-    const newObject = mapToNewObject(source, xFormTemplate);
-    expect(newObject).to.eqls(target);
-  });
+    }
+    const newObject = mapToNewObject(source, xFormTemplate)
+    expect(newObject).to.eqls(target)
+  })
 
   it('should fail if a wrongly formatted date is provided as input', () => {
     const xFormTemplate = {
@@ -142,14 +142,14 @@ describe('Reformat a date from the source', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       dateField: '1981-10'
-    };
+    }
     const errorMsg =
-      'Invalid time value error occured when trying to format 1981-10 with dd/mm/yyyy';
-    expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg);
-  });
+      'Invalid time value error occured when trying to format 1981-10 with dd/mm/yyyy'
+    expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg)
+  })
 
   it('should fail if a wrongly formatted date is provided as input', () => {
     const xFormTemplate = {
@@ -164,12 +164,12 @@ describe('Reformat a date from the source', () => {
           }
         }
       ]
-    };
+    }
     const source = {
       dateField: '1981-10'
-    };
+    }
     const errorMsg =
-      'Invalid time value error occured when trying to format 1981-10 with dd/mm/yyyy';
-    expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg);
-  });
-});
+      'Invalid time value error occured when trying to format 1981-10 with dd/mm/yyyy'
+    expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg)
+  })
+})
