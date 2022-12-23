@@ -17,6 +17,28 @@ const commands = {
   FROMEACH: 'fromEach'
 }
 
+const mapWithTemplateAsync = async (sourceFile, xFormTemplateFile) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const result = mapWithTemplate(sourceFile, xFormTemplateFile)
+      resolve(result)
+    } catch (error) {
+      reject(new Error(`An error occured during transformation ${error}`))
+    }
+  })
+}
+
+const mapToNewObjectAsync = async (source, xFormTemplate) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const result = mapToNewObject(source, xFormTemplate)
+      resolve(result)
+    } catch (error) {
+      reject(new Error(`An error occured during transformation ${error}`))
+    }
+  })
+}
+
 const mapWithTemplate = (sourceFile, xformTemplateFile) => {
   const source = readJSON(sourceFile)
   const xformTemplate = readJSON(xformTemplateFile)
@@ -184,4 +206,9 @@ const traverseTemplate = (source, xFormTemplate) => {
   return traverseFieldset(source, xFormTemplate[commands.FIELDSET], {})
 }
 
-module.exports = { mapToNewObject, mapWithTemplate, traverseTemplate }
+module.exports = {
+  mapToNewObject,
+  mapWithTemplate,
+  mapWithTemplateAsync,
+  mapToNewObjectAsync
+}
