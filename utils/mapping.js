@@ -17,6 +17,18 @@ const commands = {
   FROMEACH: 'fromEach'
 }
 
+const mapArrayWithTemplate = async (
+  sourceFile,
+  xFormTemplateFile,
+  continueOnError = false
+) => {
+  const { source, xFormTemplate } = readFromFiles(
+    sourceFile,
+    xFormTemplateFile
+  )
+  return await mapToNewObjects(source, xFormTemplate, continueOnError)
+}
+
 const mapWithTemplateAsync = async (sourceFile, xFormTemplateFile) => {
   return new Promise((resolve, reject) => {
     try {
@@ -28,22 +40,51 @@ const mapWithTemplateAsync = async (sourceFile, xFormTemplateFile) => {
   })
 }
 
-const mapToNewObjectAsync = async (source, xFormTemplate) => {
+const mapToNewObjects = async (
+  sourceData,
+  xFormTemplate,
+  continueOnError = false
+) => {
+  return Promise.all(
+    sourceData.map((source) =>
+      mapToNewObjectAsync(source, xFormTemplate, continueOnError)
+    )
+  )
+}
+
+const mapToNewObjectAsync = async (
+  source,
+  xFormTemplate,
+  continueOnError = false
+) => {
   return new Promise((resolve, reject) => {
     try {
       const result = mapToNewObject(source, xFormTemplate)
       resolve(result)
     } catch (error) {
-      reject(new Error(`An error occured during transformation ${error}`))
+      if (continueOnError) {
+        resolve({ error: error.message })
+      } else {
+        reject(new Error(`An error occured during transformation ${error}`))
+      }
     }
   })
 }
 
-const mapWithTemplate = (sourceFile, xformTemplateFile) => {
-  const source = readJSON(sourceFile)
-  const xformTemplate = readJSON(xformTemplateFile)
+const readFromFiles = (sourceFile, xFormTemplateFile) => {
+  return {
+    source: readJSON(sourceFile),
+    xFormTemplate: readJSON(xFormTemplateFile)
+  }
+}
 
-  return mapToNewObject(source, xformTemplate)
+const mapWithTemplate = (sourceFile, xFormTemplateFile) => {
+  const { source, xFormTemplate } = readFromFiles(
+    sourceFile,
+    xFormTemplateFile
+  )
+
+  return mapToNewObject(source, xFormTemplate)
 }
 
 const mapToNewObject = (source, xFormTemplate) => {
@@ -210,5 +251,7 @@ module.exports = {
   mapToNewObject,
   mapWithTemplate,
   mapWithTemplateAsync,
-  mapToNewObjectAsync
+  mapToNewObjectAsync,
+  mapToNewObjects,
+  mapArrayWithTemplate
 }

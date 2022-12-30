@@ -1,0 +1,13 @@
+{
+    "fieldset": [
+        {
+            "from": "dateField",
+            "to": "anotherDatefield",
+            "via": {
+                "type": "date",
+                "format": "dd/mm/yyyy",
+                "sourceFormat": "yyyy-dd-mm"
+            }
+        }
+    ]
+}
