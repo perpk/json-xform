@@ -91,7 +91,6 @@ describe('Process Array data with provided mapping', () => {
 
     const source = {
       dateField: '1981-10-03'
-
     }
     await mapToNewObjects(source, xFormTemplate).should.be.rejected
   })
@@ -113,7 +112,6 @@ describe('Process Array data with provided mapping', () => {
 
     const source = {
       dateField: '1981-10-03'
-
     }
     await mapToNewObjects(source, xFormTemplate, true).should.be.rejected
   })
@@ -181,5 +179,47 @@ describe('Process Array data with provided mapping', () => {
       }
     ]
     chai.expect(result).to.eqls(target)
+  })
+
+  it('should transform the source file via a given template file and continue on an error if the according flag is set', async () => {
+    const target = [
+      {
+        anotherDatefield: '10/03/1981'
+      },
+      {
+        error:
+          'Invalid time value error occured when trying to format 1999-12 with dd/mm/yyyy'
+      },
+      {
+        anotherDatefield: '11/04/1991'
+      }
+    ]
+
+    await mapArrayWithTemplate(
+      `${__dirname}/mocks/error-source-array.json`,
+      `${__dirname}/mocks/error-template-array.json`,
+      true
+    ).should.eventually.eqls(target)
+  })
+
+  it('should fail with an error when trying to transform invalid data and the according flag is not set', async () => {
+    const target = [
+      {
+        anotherDatefield: '10/03/1981'
+      },
+      {
+        error:
+          'Invalid time value error occured when trying to format 1999-12 with dd/mm/yyyy'
+      },
+      {
+        anotherDatefield: '11/04/1991'
+      }
+    ]
+
+    await mapArrayWithTemplate(
+      `${__dirname}/mocks/error-source-array.json`,
+      `${__dirname}/mocks/error-template-array.json`,
+      false
+    ).should.be.rejectedWith(target.error)
   })
 })
