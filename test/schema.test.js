@@ -305,4 +305,37 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
     const result = validateWithSchema(jsonToValidate)
     expect(result.valid).to.false
   })
+
+  it('should require the sourceFormat property only if the formatter \'date\' is set', () => {
+    let jsonToValidate = {
+      fieldset: [
+        {
+          from: 'dateField',
+          to: 'property.anotherDatefield',
+          via: {
+            type: 'date',
+            format: 'dd/mm/yyyy'
+          }
+        }
+      ]
+    }
+    let result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+
+    jsonToValidate = {
+      fieldset: [
+        {
+          from: 'dateField',
+          to: 'property.anotherDatefield',
+          via: {
+            type: 'custom',
+            format: 'dd/mm/yyyy'
+          }
+        }
+      ]
+    }
+
+    result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.true
+  })
 })

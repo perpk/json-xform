@@ -5,10 +5,23 @@ const schema = {
       id: '/Via',
       type: 'object',
       properties: {
-        type: { type: 'string', required: true, enum: ['date'] },
-        sourceFormat: { type: 'string', required: true },
+        type: { type: 'string', required: true, enum: ['date', 'custom'] },
+        sourceFormat: { type: 'string' },
         format: { type: 'string', required: true }
-      }
+      },
+      anyOf: [
+        {
+          properties: {
+            type: { const: 'date' }
+          },
+          required: ['sourceFormat']
+        },
+        {
+          properties: {
+            type: { not: { const: 'date' } }
+          }
+        }
+      ]
     },
     fieldset: {
       id: '/Fieldset',
