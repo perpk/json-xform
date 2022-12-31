@@ -37,3 +37,6 @@ npm-debug.log
 mochawesome-report/
 
 mocha-report.json
+
+# A locally available file to try things out
+.scrap*
