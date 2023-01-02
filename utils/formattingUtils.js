@@ -2,34 +2,43 @@
 
 const dFormat = require('date-fns/format')
 const parse = require('date-fns/parse')
-
-const { executeCommandFromString } = require('./commandUtils')
+const { executeTransformationCommands } = require('./transformUtils')
 
 const createFormatter = (type) => {
   switch (type) {
     case 'date':
       return dateFormatter
-    case 'custom':
-      return customFormatter
+    case 'commands':
+      return commandsFormatter
     default:
       throw Error(`There's no type named ${type} known currently`)
   }
 }
 
-const dateFormatter = (value, format, sourceFormat) => {
+const dateFormatter = (value, { format, sourceFormat }) => {
   try {
     const date = parse(value, sourceFormat, new Date())
     return dFormat(date, format)
   } catch (ex) {
-    throw Error(`${ex.message} error occured when trying to format ${value} with ${format}`)
+    throw Error(
+      `${ex.message} error occured when trying to format ${value} with ${format}`
+    )
   }
 }
 
-const customFormatter = (value, format, _) => {
+const commandsFormatter = (value, { transform }) => {
   try {
-    return executeCommandFromString(value, format)
+    return executeTransformationCommands(value, transform)
   } catch (ex) {
-    throw Error(`${ex.message} error occured when trying to format ${value} with ${format}`)
+    throw Error(
+      `${
+        ex.message
+      } error occured when trying to format ${value} with one of ${JSON.stringify(
+        transform,
+        null,
+        2
+      )}`
+    )
   }
 }
 
@@ -39,7 +48,7 @@ const formatPropValueIfNecessary = (propValue, via) => {
   }
 
   const formatter = createFormatter(via.type)
-  return formatter(propValue, via.format, via.sourceFormat)
+  return formatter(propValue, via)
 }
 
 module.exports = { formatPropValueIfNecessary, createFormatter, dateFormatter }

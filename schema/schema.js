@@ -5,21 +5,34 @@ const schema = {
       id: '/Via',
       type: 'object',
       properties: {
-        type: { type: 'string', required: true, enum: ['date', 'custom'] },
+        type: { type: 'string', required: true, enum: ['date', 'commands'] },
         sourceFormat: { type: 'string' },
-        format: { type: 'string', required: true }
+        format: { type: 'string' },
+        transform: {
+          type: 'array',
+          minItems: 1,
+          items: {
+            type: 'object',
+            properties: {
+              command: { type: 'string', required: true },
+              map: { type: 'boolean', required: false, default: false },
+              params: { type: 'array', minItems: 0 }
+            }
+          }
+        }
       },
       anyOf: [
         {
           properties: {
             type: { const: 'date' }
           },
-          required: ['sourceFormat']
+          required: ['sourceFormat', 'format']
         },
         {
           properties: {
-            type: { not: { const: 'date' } }
-          }
+            type: { const: 'commands' }
+          },
+          required: ['transform']
         }
       ]
     },
@@ -52,7 +65,12 @@ const schema = {
             allOf: [
               {
                 dependencies: {
-                  withTemplate: { oneOf: [{ required: ['to'] }, { required: ['withValueFrom'] }] }
+                  withTemplate: {
+                    oneOf: [
+                      { required: ['to'] },
+                      { required: ['withValueFrom'] }
+                    ]
+                  }
                 }
               }
             ],

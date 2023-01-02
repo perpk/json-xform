@@ -172,29 +172,4 @@ describe('Reformat a date from the source', () => {
       'Invalid time value error occured when trying to format 1981-10 with dd/mm/yyyy'
     expect(() => mapToNewObject(source, xFormTemplate)).to.throw(errorMsg)
   })
-
-  it('should run an arbitrary operation on a field', () => {
-    const xFormTemplate = {
-      fieldset: [
-        {
-          from: 'lowercase',
-          to: 'uppercase',
-          via: {
-            type: 'custom',
-            format: 'toUpperCase'
-          }
-        }
-      ]
-    }
-
-    const source = {
-      lowercase: 'uppercase'
-    }
-
-    const target = {
-      uppercase: 'UPPERCASE'
-    }
-
-    expect(mapToNewObject(source, xFormTemplate)).to.eqls(target)
-  })
 })

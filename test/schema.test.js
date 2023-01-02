@@ -306,36 +306,94 @@ describe('Unsuccessful validations of correct JSON mappings :(', () => {
     expect(result.valid).to.false
   })
 
-  it('should require the sourceFormat property only if the formatter \'date\' is set', () => {
+  it("should find a JSON valid for 'commands' type with and without params", () => {
     let jsonToValidate = {
       fieldset: [
         {
-          from: 'dateField',
-          to: 'property.anotherDatefield',
+          from: 'test',
           via: {
-            type: 'date',
-            format: 'dd/mm/yyyy'
+            type: 'commands',
+            transform: [
+              {
+                command: 'toString'
+              }
+            ]
           }
         }
       ]
     }
     let result = validateWithSchema(jsonToValidate)
-    expect(result.valid).to.false
+    expect(result.valid).to.true
 
     jsonToValidate = {
       fieldset: [
         {
-          from: 'dateField',
-          to: 'property.anotherDatefield',
+          from: 'test',
           via: {
-            type: 'custom',
-            format: 'dd/mm/yyyy'
+            type: 'commands',
+            transform: [
+              {
+                command: 'splice',
+                params: [0, 1, 'test']
+              }
+            ]
           }
         }
       ]
     }
-
     result = validateWithSchema(jsonToValidate)
     expect(result.valid).to.true
+  })
+
+  it("should find a JSON invalid for 'commands' type when no transform prop is present", () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'test',
+          via: {
+            type: 'commands'
+          }
+        }
+      ]
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
+
+  it("should find a JSON invalid for 'commands' type when transform holds the wrong type", () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'test',
+          via: {
+            type: 'commands',
+            transform: 'test'
+          }
+        }
+      ]
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
+  })
+
+  it("should find a JSON invalid for 'commands' type when params holds the wrong type", () => {
+    const jsonToValidate = {
+      fieldset: [
+        {
+          from: 'test',
+          via: {
+            type: 'commands',
+            transform: [
+              {
+                command: 'toString',
+                params: 'test'
+              }
+            ]
+          }
+        }
+      ]
+    }
+    const result = validateWithSchema(jsonToValidate)
+    expect(result.valid).to.false
   })
 })
