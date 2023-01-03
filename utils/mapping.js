@@ -1,5 +1,6 @@
 'use-strict'
 
+const _ = require('lodash')
 const { readJSON } = require('./ioUtils')
 const { addPropToTarget } = require('./constructTarget')
 const { querySingleProp, queryAll } = require('./queryJson')
@@ -114,7 +115,10 @@ const traverseFieldsets = (sources, parentTemplate, flatten) => {
   }
   sources.forEach((item) => {
     if (!flatten) {
-      fieldsetTarget.push(traverseFieldset(item, parentTemplate, {}))
+      const fieldsetResult = traverseFieldset(item, parentTemplate, {})
+      if (!_.isEmpty(fieldsetResult)) {
+        fieldsetTarget.push(fieldsetResult)
+      }
     } else {
       fieldsetTarget = traverseFieldset(item, parentTemplate, fieldsetTarget)
     }
