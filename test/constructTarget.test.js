@@ -82,10 +82,20 @@ describe('Adding a property to a non-empty object', () => {
     const property = 'parentProp.childProp.grandchildProp'
     const propertyValue = 'Hi, Grandpa!'
 
-    const newTarget = addPropToTarget(target, property, propertyValue)
+    const newTarget = addPropToTarget(target, property, propertyValue, false)
     expect(newTarget).to.eql({
       parentProp: { childProp: { grandchildProp: 'Hi, Grandpa!' } },
       initalProp: 'initial value'
+    })
+  })
+
+  it('should add the value to an array', () => {
+    const target = {}
+    const property = 'targetProp'
+    const propertyValue = 'prop value'
+    const newTarget = addPropToTarget(target, property, propertyValue, true)
+    expect(newTarget).to.eql({
+      targetProp: ['prop value']
     })
   })
 })

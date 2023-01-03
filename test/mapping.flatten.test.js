@@ -508,7 +508,7 @@ describe('FromEach mapping to flat object', () => {
           fieldOne: 1,
           fieldTwo: 2,
           fieldThree: 3,
-          branchFieldTwo: [22]
+          branchFieldTwo: 22
         }
       ]
     }
