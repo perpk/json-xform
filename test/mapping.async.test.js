@@ -2,7 +2,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const { describe, it } = require('mocha')
 
-const { mapToNewObjectAsync } = require('../utils/mapping')
+const { mapToNewObjectAsync, mapWithTemplateAsync } = require('../utils/mapping')
 
 chai.use(chaiAsPromised)
 chai.should()
@@ -97,5 +97,35 @@ describe('Mapping via Async API functions', () => {
 
     return Promise.resolve(
       mapToNewObjectAsync(source, xFormTemplate).should.be.rejectedWith(errorMsg))
+  })
+})
+
+describe('Map asynchronously with template from file', () => {
+  it('should transform a file via template asynchronously', async () => {
+    const result = mapWithTemplateAsync(
+      `${__dirname}/mocks/simple-source.json`,
+      `${__dirname}/mocks/simple-template.json`
+    )
+
+    const target = {
+      name: 'Peter',
+      lastname: 'Parker',
+      occupation: 'Hero with spider superpowers',
+      address: {
+        street: '31st Street',
+        city: 'New York City',
+        state: 'NY',
+        postCode: '123-ABC'
+      }
+    }
+    await result.should.eventually.eqls(target)
+  })
+
+  it('should throw an error tranformation fails', async () => {
+    const result = mapWithTemplateAsync(
+      `${__dirname}/mocks/error-source.json`,
+      `${__dirname}/mocks/error-template-array.json`
+    )
+    await result.should.be.rejected
   })
 })
