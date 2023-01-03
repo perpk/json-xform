@@ -27,19 +27,7 @@ const dateFormatter = (value, { format, sourceFormat }) => {
 }
 
 const commandsFormatter = (value, { transform }) => {
-  try {
-    return executeTransformationCommands(value, transform)
-  } catch (ex) {
-    throw Error(
-      `${
-        ex.message
-      } error occured when trying to format ${value} with one of ${JSON.stringify(
-        transform,
-        null,
-        2
-      )}`
-    )
-  }
+  return executeTransformationCommands(value, transform)
 }
 
 const formatPropValueIfNecessary = (propValue, via) => {
