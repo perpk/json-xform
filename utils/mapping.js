@@ -5,11 +5,11 @@ const { readJSON } = require('./ioUtils')
 const { addPropToTarget } = require('./constructTarget')
 const { querySingleProp, queryAll } = require('./queryJson')
 const { validateWithSchema, validationUtil } = require('../schema/validator')
-const {
-  pickTemplateVarsFromString,
-  wrapInVarBraces
-} = require('./stringUtils')
+const { pickTemplateVarsFromString, wrapInVarBraces } = require('./stringUtils')
 const { formatPropValueIfNecessary } = require('./formattingUtils')
+const fs = require('fs')
+const async = require('async')
+const { Transform } = require('stream')
 
 const commands = {
   FIELDSET: 'fieldset',
@@ -23,10 +23,7 @@ const mapArrayWithTemplate = async (
   xFormTemplateFile,
   continueOnError = false
 ) => {
-  const { source, xFormTemplate } = readFromFiles(
-    sourceFile,
-    xFormTemplateFile
-  )
+  const { source, xFormTemplate } = readFromFiles(sourceFile, xFormTemplateFile)
   return await mapToNewObjects(source, xFormTemplate, continueOnError)
 }
 
@@ -72,6 +69,26 @@ const mapToNewObjectAsync = async (
   })
 }
 
+const xFormStream = (template) => {
+  return new Transform({
+    objectMode: true,
+    transform (chunk, _, callback) {
+      const result = mapToNewObject(JSON.parse(chunk.toString()), template)
+      callback(null, JSON.stringify(result, null, 4))
+    }
+  })
+}
+
+const streamBatchProcess = (inputDir, outputDir, xFormTemplate) => {
+  const filesToTransform = fs.readdirSync(inputDir)
+  async.forEachOf(filesToTransform, (value, _1, _2) => {
+    const newFilename = `${_.trimEnd(value, '.json')}.transformed.json`
+    fs.createReadStream(`${inputDir}/${value}`)
+      .pipe(xFormStream(xFormTemplate))
+      .pipe(fs.createWriteStream(`${outputDir}/${newFilename}`))
+  })
+}
+
 const readFromFiles = (sourceFile, xFormTemplateFile) => {
   return {
     source: readJSON(sourceFile),
@@ -80,10 +97,7 @@ const readFromFiles = (sourceFile, xFormTemplateFile) => {
 }
 
 const mapWithTemplate = (sourceFile, xFormTemplateFile) => {
-  const { source, xFormTemplate } = readFromFiles(
-    sourceFile,
-    xFormTemplateFile
-  )
+  const { source, xFormTemplate } = readFromFiles(sourceFile, xFormTemplateFile)
 
   return mapToNewObject(source, xFormTemplate)
 }
@@ -257,5 +271,7 @@ module.exports = {
   mapWithTemplateAsync,
   mapToNewObjectAsync,
   mapToNewObjects,
-  mapArrayWithTemplate
+  mapArrayWithTemplate,
+  streamBatchProcess,
+  xFormStream
 }

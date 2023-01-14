@@ -22,6 +22,7 @@
   "author": "k.a.perperidis@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.2.4",
     "date-fns": "^2.29.3",
     "jsonpath": "^1.1.1",
     "jsonschema": "^1.4.1",
