@@ -25,6 +25,7 @@ jobs:
           name: nyc-output
           path: ${{github.workspace}}/.nyc_output/**/*
       - name: Test Report
+        if: (success() || failure()) && ${{github.actor != 'dependabot[bot]'}}
         uses: dorny/test-reporter@v1
         with:
           name: 'Mocha Tests'
