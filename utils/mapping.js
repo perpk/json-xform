@@ -1,14 +1,15 @@
 'use-strict'
 
+const _ = require('lodash')
 const { readJSON } = require('./ioUtils')
 const { addPropToTarget } = require('./constructTarget')
 const { querySingleProp, queryAll } = require('./queryJson')
 const { validateWithSchema, validationUtil } = require('../schema/validator')
-const {
-  pickTemplateVarsFromString,
-  wrapInVarBraces
-} = require('./stringUtils')
+const { pickTemplateVarsFromString, wrapInVarBraces } = require('./stringUtils')
 const { formatPropValueIfNecessary } = require('./formattingUtils')
+const fs = require('fs')
+const async = require('async')
+const { Transform } = require('stream')
 
 const commands = {
   FIELDSET: 'fieldset',
@@ -17,11 +18,88 @@ const commands = {
   FROMEACH: 'fromEach'
 }
 
-const mapWithTemplate = (sourceFile, xformTemplateFile) => {
-  const source = readJSON(sourceFile)
-  const xformTemplate = readJSON(xformTemplateFile)
+const mapArrayWithTemplate = async (
+  sourceFile,
+  xFormTemplateFile,
+  continueOnError = false
+) => {
+  const { source, xFormTemplate } = readFromFiles(sourceFile, xFormTemplateFile)
+  return await mapToNewObjects(source, xFormTemplate, continueOnError)
+}
 
-  return mapToNewObject(source, xformTemplate)
+const mapWithTemplateAsync = async (sourceFile, xFormTemplateFile) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const result = mapWithTemplate(sourceFile, xFormTemplateFile)
+      resolve(result)
+    } catch (error) {
+      reject(new Error(`An error occured during transformation ${error}`))
+    }
+  })
+}
+
+const mapToNewObjects = async (
+  sourceData,
+  xFormTemplate,
+  continueOnError = false
+) => {
+  return Promise.all(
+    sourceData.map((source) =>
+      mapToNewObjectAsync(source, xFormTemplate, continueOnError)
+    )
+  )
+}
+
+const mapToNewObjectAsync = async (
+  source,
+  xFormTemplate,
+  continueOnError = false
+) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const result = mapToNewObject(source, xFormTemplate)
+      resolve(result)
+    } catch (error) {
+      if (continueOnError) {
+        resolve({ error: error.message })
+      } else {
+        reject(new Error(`An error occured during transformation ${error}`))
+      }
+    }
+  })
+}
+
+const xFormStream = (template) => {
+  return new Transform({
+    objectMode: true,
+    transform (chunk, _, callback) {
+      const result = mapToNewObject(JSON.parse(chunk.toString()), template)
+      callback(null, JSON.stringify(result, null, 4))
+    }
+  })
+}
+
+const streamBatchProcess = (inputDir, outputDir, xFormTemplate) => {
+  const filesToTransform = fs.readdirSync(inputDir)
+  async.forEachOf(filesToTransform, (value, _1, _2) => {
+    const newFilename = `${_.trimEnd(value, '.json')}.transformed.json`
+    fs.createReadStream(`${inputDir}/${value}`)
+      .pipe(xFormStream(xFormTemplate))
+      .pipe(fs.createWriteStream(`${outputDir}/${newFilename}`))
+  })
+}
+
+const readFromFiles = (sourceFile, xFormTemplateFile) => {
+  return {
+    source: readJSON(sourceFile),
+    xFormTemplate: readJSON(xFormTemplateFile)
+  }
+}
+
+const mapWithTemplate = (sourceFile, xFormTemplateFile) => {
+  const { source, xFormTemplate } = readFromFiles(sourceFile, xFormTemplateFile)
+
+  return mapToNewObject(source, xFormTemplate)
 }
 
 const mapToNewObject = (source, xFormTemplate) => {
@@ -114,7 +192,10 @@ const traverseFieldsets = (sources, parentTemplate, flatten) => {
   }
   sources.forEach((item) => {
     if (!flatten) {
-      fieldsetTarget.push(traverseFieldset(item, parentTemplate, {}))
+      const fieldsetResult = traverseFieldset(item, parentTemplate, {})
+      if (!_.isEmpty(fieldsetResult)) {
+        fieldsetTarget.push(fieldsetResult)
+      }
     } else {
       fieldsetTarget = traverseFieldset(item, parentTemplate, fieldsetTarget)
     }
@@ -184,4 +265,13 @@ const traverseTemplate = (source, xFormTemplate) => {
   return traverseFieldset(source, xFormTemplate[commands.FIELDSET], {})
 }
 
-module.exports = { mapToNewObject, mapWithTemplate, traverseTemplate }
+module.exports = {
+  mapToNewObject,
+  mapWithTemplate,
+  mapWithTemplateAsync,
+  mapToNewObjectAsync,
+  mapToNewObjects,
+  mapArrayWithTemplate,
+  streamBatchProcess,
+  xFormStream
+}

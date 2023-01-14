@@ -83,4 +83,42 @@ describe('Testing repetition groups', () => {
     const newObject = mapToNewObject(source, xFormTemplate)
     expect(newObject).to.eqls(target)
   })
+
+  it('should not create empty objects in the result', () => {
+    const xFormTemplate = {
+      fieldset: [
+        {
+          fromEach: {
+            field: 'food',
+            fieldset: [
+              {
+                from: 'provatina',
+                to: 'favorites.foods'
+              }
+            ]
+          }
+        }
+      ]
+    }
+    const source = {
+      food: [
+        {
+          bananas: '2€',
+          countryOfOrigin: 'Nicaragua'
+        },
+        {
+          asparagus: '5€',
+          countryOfOrigin: 'Romania'
+        },
+        {
+          provatina: '10€',
+          countryOfOrigin: 'Greece'
+        }
+      ]
+    }
+
+    const result = mapToNewObject(source, xFormTemplate)
+    expect(result.food.length).to.eq(1)
+    expect(result.food[0]).not.to.be.empty
+  })
 })
