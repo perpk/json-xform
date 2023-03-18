@@ -40,3 +40,5 @@ mocha-report.json
 
 # A locally available file to try things out
 .scrap*
+
+out/
