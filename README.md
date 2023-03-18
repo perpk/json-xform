@@ -95,7 +95,7 @@ const mapping = {
                 from: 'fieldOne'
               },
               {
-                from: 'fieldTwo'
+                from: 'fieldTwo',
                 toArray: true
               },
               {
