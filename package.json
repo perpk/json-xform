@@ -25,7 +25,7 @@
     "async": "^3.2.4",
     "date-fns": "^2.29.3",
     "jsonpath": "^1.1.1",
-    "jsonschema": "^1.4.1",
+    "jsonschema": "^1.5.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
