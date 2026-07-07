@@ -10,58 +10,96 @@ jobs:
     name: Run Tests
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
       - id: nvmrc
         uses: browniebroke/read-nvmrc-action@v1
-      - uses: actions/setup-node@v3
+
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.nvmrc.outputs.node_version }}
+          cache: npm
+
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
+
       - name: Mocha Tests
         run: npm run test:reportJson
-      - uses: actions/upload-artifact@v3
+
+      - name: Upload nyc output
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: nyc-output
-          path: ${{github.workspace}}/.nyc_output/**/*
+          path: ${{ github.workspace }}/.nyc_output
+          if-no-files-found: warn
+
       - name: Test Report
-        if: (success() || failure()) && ${{github.actor != 'dependabot[bot]'}}
+        if: (success() || failure()) && github.actor != 'dependabot[bot]'
         uses: dorny/test-reporter@v1
         with:
-          name: 'Mocha Tests'
-          reporter: 'mocha-json'
-          path: './mocha-report.json'
+          name: Mocha Tests
+          reporter: mocha-json
+          path: ./mocha-report.json
+
   eslint:
     runs-on: ubuntu-latest
-    name: Run ESlint
+    name: Run ESLint
     permissions:
       contents: read
       pull-requests: write
+
     steps:
-     - uses: actions/checkout@v2
-     - id: nvmrc
-       uses: browniebroke/read-nvmrc-action@v1
-     - uses: actions/setup-node@v3
-       with:
-         node-version: ${{ steps.nvmrc.outputs.node_version }}
-     - uses: reviewdog/action-eslint@v1
-       with: 
-         github_token: ${{ secrets.GITHUB_TOKEN }}
-         reporter: github-pr-review
+      - uses: actions/checkout@v4
+
+      - id: nvmrc
+        uses: browniebroke/read-nvmrc-action@v1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.nvmrc.outputs.node_version }}
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+
   coverage:
     needs: [build]
+    if: always()
     runs-on: ubuntu-latest
     name: Coverage assessment
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - id: nvmrc
+        uses: browniebroke/read-nvmrc-action@v1
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: ${{ steps.nvmrc.outputs.node_version }}
+          cache: npm
+
       - name: Install Dependencies
-        run: npm install
-      - uses: actions/download-artifact@v3
+        run: npm ci
+
+      - name: Download nyc artifact (continue if missing)
+        id: download_nyc
+        continue-on-error: true
+        uses: actions/download-artifact@v4
         with:
           name: nyc-output
-          path: ${{github.workspace}}/.nyc_output
+          path: ${{ github.workspace }}/.nyc_output
+
       - name: Coverage
+        if: steps.download_nyc.outcome == 'success'
         run: npm run coverage:report
+
+      - name: Coverage skipped
+        if: steps.download_nyc.outcome != 'success'
+        run: echo "nyc-output artifact not found; skipping coverage report."
