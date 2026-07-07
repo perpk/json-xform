@@ -10,17 +10,17 @@ jobs:
     name: Run Tests
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - id: nvmrc
         uses: browniebroke/read-nvmrc-action@v1
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.nvmrc.outputs.node_version }}
       - name: Install Dependencies
         run: npm install
       - name: Mocha Tests
         run: npm run test:reportJson
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: nyc-output
           path: ${{github.workspace}}/.nyc_output/**/*
@@ -59,7 +59,7 @@ jobs:
           node-version: 14
       - name: Install Dependencies
         run: npm install
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: nyc-output
           path: ${{github.workspace}}/.nyc_output
